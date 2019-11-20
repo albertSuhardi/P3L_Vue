@@ -19,7 +19,7 @@
                                         </v-text-field>
                                         <v-text-field v-model="form.password" label="Password" type="password" outlined height=50>
                                         </v-text-field>
-                                        <v-btn @click="login()" height="40" block color="info" class="elevation-0">SIGN IN</v-btn>
+                                        <v-btn @click="signIn()" height="40" block color="info" class="elevation-0">SIGN IN</v-btn>
                                     </div>
                                 </div>
                             </v-col>
@@ -46,7 +46,7 @@ export default {
         }   
     },
     methods:{
-        login(){
+        signIn(){
             var url = this.$apiUrl+'/auth'
             this.user = new FormData()
             this.user.append('email', this.form.email);
