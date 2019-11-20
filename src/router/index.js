@@ -9,7 +9,7 @@ function loadView(view) {
 }
 
 const routes = [{
-    path: '/dashboard',
+    path: '/',
 
     component: DashboardLayout,
     children: [
@@ -26,7 +26,7 @@ const routes = [{
     {
         name: 'Login',
         path: '/',
-        component: Login,
+        component: loadView('Login')
     }
     ]
 }, ]

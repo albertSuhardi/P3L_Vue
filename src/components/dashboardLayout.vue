@@ -24,7 +24,7 @@
  <v-list-item
  v-for="item in items"
  :key="item.title"
- link router :to="item.to"
+ link router :to="item.path"
  >
  <v-list-item-icon>
  <v-icon>{{ item.icon }}</v-icon>
