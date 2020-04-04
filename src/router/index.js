@@ -1,40 +1,120 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+//const DashboardUserLayout = () => import( /* webpackChunkName: "dashboard" */ '../components/dashboardUserLayout.vue')
+const HomePageLayout = () => import('../components/homePageLayout.vue')
+const DashboardAdminLayout = () => import( /* webpackChunkName: "dashboard" */ '../components/dashboardAdminLayout.vue')
 
-const DashboardLayout = () => import( /* webpackChunkName: "dashboard" */ '../components/dashboardLayout.vue')
+// function loadView(view) {
+//     return () => import( /* webpackChunkName: "view[request]" */ `../components/dashboardUserContents/${view}.vue`)
+// }
 
-function loadView(view) {
-    return () => import( /* webpackChunkName: "view[request]" */ `../components/dashboardContents/${view}.vue`)
+function loadHomePage(view){
+    return () => import(`../components/homePageContents/${view}.vue`)
 }
 
-const routes = [{
+function loadAdminPage(view){
+    return () => import(`../components/dashboardAdminContents/${view}.vue`)
+}
+
+const routes = [
+{
     path: '/',
-
-    component: DashboardLayout,
+    component: HomePageLayout,
     children: [
-    {
-        name: 'UserController',
-        path: '/user',
-        component: loadView('userController')
-    },
-    {
-        name: 'cabangController',
-        path: '/branches',
-        component: loadView('cabangController')
-    },
-    {
-        name: 'Login',
-        path: '/',
-        component: loadView('Login')
-    }
+        {
+            path: '/',
+            name: 'home',
+            component: loadHomePage('home')
+        }, 
+        {
+            path: '/showProduk',
+            name: 'showProduk',
+            component: loadHomePage('showProduk')
+        }, 
+        {
+            path: '/signDual',
+            name: 'signDual',
+            component: loadHomePage('signDual')
+        }
     ]
-}, ]
-Vue.use(Router)
+},
+// {
+//     path: '/dashboardUser', 
+//     component: DashboardUserLayout, 
+//     children: [ 
+//         { 
+//             path: '/dashboardUser',            
+//             name: 'borrowBookController', 
+//             component: loadView('borrowBookController') 
+//         },
+//         { 
+//             path: '/dashboardUser/borrowList',            
+//             name: 'borrowListController', 
+//             component: loadView('borrowListController') 
+//         },
+//         { 
+//             path: '/dashboardUser/requestBook',            
+//             name: 'requestBookController', 
+//             component: loadView('requestBookController') 
+//         },
+//         { 
+//             path: '/dashboardUser/bookReview',            
+//             name: 'reviewController', 
+//             component: loadView('reviewController') 
+//         },
+//         { 
+//             path: '/dashboardUser/userAccount',            
+//             name: 'accountController', 
+//             component: loadView('accountController') 
+//         },
+//     ] 
+// }, 
+{
+    path: '/dashboardAdmin', 
+    component: DashboardAdminLayout, 
+    children: [ 
+        { 
+            path: '/dashboardAdmin',            
+            name: 'addPegawaiController', 
+            component: loadAdminPage('addPegawaiController') 
+        },
+        { 
+            path: '/dashboardAdmin/addProduk',            
+            name: 'addProdukListController', 
+            component: loadAdminPage('addProdukListController') 
+        },
+        { 
+            path: '/dashboardAdmin/addLayanan',            
+            name: 'addLayananController', 
+            component: loadAdminPage('addLayananController') 
+        },
+        { 
+            path: '/dashboardAdmin/addJenis',            
+            name: 'addJenisListController', 
+            component: loadAdminPage('addJenisListController') 
+        },
+        { 
+            path: '/dashboardAdmin/addUkuran',            
+            name: 'addUkuranListController', 
+            component: loadAdminPage('addUkuranListController')
+        },
+        { 
+            path: '/dashboardAdmin/addMember',            
+            name: 'addMemberController', 
+            component: loadAdminPage('addMemberController')
+        },
+        { 
+            path: '/dashboardAdmin/addSupplier',            
+            name: 'addSupplierListController', 
+            component: loadAdminPage('addSupplierListController')
+        }
+    ] 
+}, 
+]
 
-const router = new Router({
-    mode: 'history',
-    routes: routes
-})
+Vue.use(Router) 
 
+const router = new Router({mode: 'history', routes: routes}) 
+    
 export default router

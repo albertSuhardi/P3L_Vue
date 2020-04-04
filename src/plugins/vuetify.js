@@ -6,6 +6,6 @@ export default new Vuetify({
         iconfont: 'mdi',
     },
     theme: {
-        dark: true,
+        dark: false,
     },
 });
