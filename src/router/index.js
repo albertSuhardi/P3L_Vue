@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+
 //const DashboardUserLayout = () => import( /* webpackChunkName: "dashboard" */ '../components/dashboardUserLayout.vue')
 const HomePageLayout = () => import('../components/homePageLayout.vue')
-const DashboardAdminLayout = () => import( /* webpackChunkName: "dashboard" */ '../components/dashboardAdminLayout.vue')
+const DashboardAdminLayout = () => import('../components/dashboardAdminLayout.vue')
+const DashboardPegawaiLayout = () => import('../components/dashboardPegawaiLayout.vue')
 
 // function loadView(view) {
 //     return () => import( /* webpackChunkName: "view[request]" */ `../components/dashboardUserContents/${view}.vue`)
@@ -16,6 +18,16 @@ function loadHomePage(view){
 function loadAdminPage(view){
     return () => import(`../components/dashboardAdminContents/${view}.vue`)
 }
+
+function loadPegawaiPage(view){
+    return () => import(`../components/dashboardPegawaiContents/${view}.vue`)
+}
+
+// router.beforeEach((to, from, next) => {
+//     if(localStorage.getItem('login') != 'true') next({ name: 'login'})
+//     next
+// })
+Vue.use(Router)   
 
 const routes = [
 {
@@ -39,45 +51,16 @@ const routes = [
         }
     ]
 },
-// {
-//     path: '/dashboardUser', 
-//     component: DashboardUserLayout, 
-//     children: [ 
-//         { 
-//             path: '/dashboardUser',            
-//             name: 'borrowBookController', 
-//             component: loadView('borrowBookController') 
-//         },
-//         { 
-//             path: '/dashboardUser/borrowList',            
-//             name: 'borrowListController', 
-//             component: loadView('borrowListController') 
-//         },
-//         { 
-//             path: '/dashboardUser/requestBook',            
-//             name: 'requestBookController', 
-//             component: loadView('requestBookController') 
-//         },
-//         { 
-//             path: '/dashboardUser/bookReview',            
-//             name: 'reviewController', 
-//             component: loadView('reviewController') 
-//         },
-//         { 
-//             path: '/dashboardUser/userAccount',            
-//             name: 'accountController', 
-//             component: loadView('accountController') 
-//         },
-//     ] 
-// }, 
 {
     path: '/dashboardAdmin', 
-    component: DashboardAdminLayout, 
+    component: DashboardAdminLayout,
+    meta: { requiresAuth: true },   
     children: [ 
         { 
             path: '/dashboardAdmin',            
             name: 'addPegawaiController', 
-            component: loadAdminPage('addPegawaiController') 
+            meta: { requiresAdmin: true},
+            component: loadAdminPage('addPegawaiController'),
         },
         { 
             path: '/dashboardAdmin/addProduk',            
@@ -87,34 +70,104 @@ const routes = [
         { 
             path: '/dashboardAdmin/addLayanan',            
             name: 'addLayananController', 
+            meta: { requiresAdmin: true},
             component: loadAdminPage('addLayananController') 
+        },
+        { 
+            path: '/dashboardAdmin/HewanControl',            
+            name: 'HewanController', 
+            meta: { requiresAdmin: true},
+            component: loadAdminPage('HewanController')
         },
         { 
             path: '/dashboardAdmin/addJenis',            
             name: 'addJenisListController', 
+            meta: { requiresAdmin: true},
             component: loadAdminPage('addJenisListController') 
         },
         { 
             path: '/dashboardAdmin/addUkuran',            
             name: 'addUkuranListController', 
+            meta: { requiresAdmin: true},
             component: loadAdminPage('addUkuranListController')
         },
         { 
             path: '/dashboardAdmin/addMember',            
             name: 'addMemberController', 
+            meta: { requiresAdmin: true},
             component: loadAdminPage('addMemberController')
         },
         { 
             path: '/dashboardAdmin/addSupplier',            
             name: 'addSupplierListController', 
+            meta: { requiresAdmin: true},
             component: loadAdminPage('addSupplierListController')
         }
     ] 
 }, 
+{
+    path: '/dashboardPegawai', 
+    component: DashboardPegawaiLayout, 
+    meta: {requiresAuth: true},
+    children: [ 
+        { 
+            path: '/dashboardPegawai',            
+            name: 'addAccountController',
+            meta: { requiresCS: true}, 
+            component: loadPegawaiPage('addAccountController') 
+        }
+    ] 
+},
 ]
 
 Vue.use(Router) 
 
-const router = new Router({mode: 'history', routes: routes}) 
+//const router = new Router({mode: 'history', routes: routes}) 
+const router = new Router({mode: 'history',  base: process.env.BASE_URL, routes: routes, scrollBehavior () {
+    return { x: 0, y: 0 }
+  }}) 
     
 export default router
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      // this route requires auth, check if logged in
+      // if not, redirect to login page.
+      if (!(localStorage.getItem('masuk'))) {
+        next({
+          path: '/signDual',
+          query: { redirect: to.fullPath }
+        })
+      } else {
+        next()
+      }
+    } else{
+      next() // make sure to always call next()!
+    }
+  })
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAdmin)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if ((localStorage.getItem('role'))!= 'OWNER') {
+      next({ path : '/dashboardAdmin' })
+    } else {
+      next()
+    }
+  } else{
+    next() // make sure to always call next()!
+  }
+})
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresCS)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if ((localStorage.getItem('role'))!= 'CS' ) {
+      next({ path : '/dashboardPegawai' })
+    } else {
+      next()
+    }
+  } else{
+    next() // make sure to always call next()!
+  }
+})

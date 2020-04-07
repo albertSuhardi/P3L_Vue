@@ -49,6 +49,7 @@
         items: [
             { title: 'Pegawai', icon: 'mdi-account-multiple', name: 'addPegawaiController'},
             { title: 'Produk', icon: 'mdi-notebook-multiple', name: 'addProdukListController'},
+            { title: 'Hewan', icon: 'mdi-dog', name: 'HewanController'},
             { title: 'Layanan', icon: 'mdi-paw', name: 'addLayananController'},
             { title: 'Jenis Hewan', icon: 'mdi-cat', name: 'addJenisListController'},
             { title: 'Ukuran Hewan', icon: 'mdi-ruler', name: 'addUkuranListController'},
@@ -61,9 +62,13 @@
         signOut(){
             let confirm = window.confirm('Are you sure want to Sign Out?')
             if(confirm){
+                // this.$session.clear('id_pegawai');
+                localStorage.clear('id_pegawai');
+                localStorage.clear('role');
+                localStorage.setItem('masuk', 'false');
                 this.$router.push('/');
             }else{
-                this.$router.push('/dashboardAdmin')
+                this.$router.push('/dashboardAdmin');
             }
         }
     }

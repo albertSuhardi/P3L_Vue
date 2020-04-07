@@ -4,6 +4,13 @@
             <v-container grid-list-md mb-0>
                 <h2 class="text-md-center">Hewan</h2>
                 <v-layout row wrap style="margin:10px">
+                    <v-flex xs6>
+                        <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
+                            @click="dialog = true">
+                            <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
+                            Masukkan Data Hewan Baru
+                        </v-btn>
+                    </v-flex>
                     <v-flex xs6 class="text-right">
                         <v-text-field v-model="keyword" append-icon="mdi-search-web" label="Search" hide-details>
                         </v-text-field>
@@ -16,6 +23,7 @@
                             <tr v-for="(item,index) in items" :key="item.id_hewan">
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ item.nama }}</td>
+                                <td>{{ item.id_jenis }}</td>
                                 <td>{{ item.tgl_lhr}}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
@@ -41,6 +49,17 @@
                         <v-row>
                             <v-col cols="12">
                                 <v-text-field label="Nama*" v-model="form.nama" required></v-text-field>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-select v-model="select.jenis" :hint="`${select.jenis}`"
+                                    :items="types"
+                                    item-text="Jenis Hewan"
+                                    item-value="abbr"
+                                    label="Select"
+                                    persistent-hint
+                                    return-object
+                                    single-line
+                                    >{{ select.jenis }}</v-select>
                             </v-col>
                             <v-col cols="12">
                                 <!-- <v-date-picker v-text-field v-model="date" prepend-icon="event" v-on="on" label="Tgl lahir*" required></v-date-picker> -->
@@ -100,6 +119,10 @@ export default {
                     value: 'nama'             
                 },             
                 {               
+                    text: 'Jenis Hewan',               
+                    value: 'jenis_hewan.jenis'             
+                },
+                {               
                     text: 'Tanggal Lahir',               
                     value: 'tgl_lhr'             
                 },
@@ -109,16 +132,20 @@ export default {
                     sortable: false
                 },         
             ],         
-            pets: [],         
+            pets: [],
+            types: [],         
             snackbar: false,          
             color: null,         
             text: '',          
             load: false, 
             form: {            
                 nama : '',           
-                no_telp : '',
-                alamat : ''
+                tgl_lhr : ''
             },         
+            select: {            
+                jenis : ''
+            },       
+            type : new FormData,           
             pet : new FormData,         
             typeInput: 'new',        
             errors : '',         
@@ -127,19 +154,24 @@ export default {
     },     
     methods:{         
         getData(){             
-            var uri = this.$apiUrl + '/supplierlist'             
+            var uri = this.$apiUrl + '/data_hewan'             
             this.$http.get(uri).then(response =>{                 
-                this.suppliers=response.data.message             
+                this.pets=response.data.data             
+            })               
+        },
+        getType(){             
+            var uri = this.$apiUrl + '/jenis_hewan'             
+            this.$http.get(uri).then(response =>{                 
+                this.types=response.data.data             
             })               
         },         
         sendData(){
-            this.supplier.append('nama', this.form.nama);      
-            this.supplier.append('no_telp', this.form.no_telp);       
-            this.supplier.append('alamat', this.form.alamat);       
-            this.supplier.append('id_supplier', 1);
-            var uri =this.$apiUrl + '/supplierlist'             
+            this.pet.append('nama', this.form.nama);      
+            this.pet.append('tgl_lhr', this.form.tgl_lhr);       
+            this.pet.append('id_hewan', 1);
+            var uri =this.$apiUrl + '/data_hewan'             
             this.load = true             
-            this.$http.post(uri,this.supplier).then(response =>{               
+            this.$http.post(uri,this.pet).then(response =>{               
                 this.snackbar = true; //mengaktifkan snackbar               
                 this.color = 'green'; //memberi warna snackbar               
                 this.text = response.data.message; //memasukkan pesan ke snackbar               
@@ -156,13 +188,12 @@ export default {
             })         
         },         
         updateData(){             
-            this.supplier.append('nama', this.form.nama);      
-            this.supplier.append('no_telp', this.form.no_telp);       
-            this.supplier.append('alamat', this.form.alamat);       
-            this.supplier.append('id_supplier', 1);
-            var uri = this.$apiUrl + '/supplierlist/' + this.updatedId;             
+            this.pet.append('nama', this.form.nama);      
+            this.pet.append('tgl_lhr', this.form.tgl_lhr);       
+            this.pet.append('id_hewan', 1);
+            var uri = this.$apiUrl + '/data_hewan/' + this.updatedId;             
             this.load = true             
-            this.$http.post(uri,this.supplier).then(response =>{ 
+            this.$http.post(uri,this.pet).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar               
                 this.color = 'green'; //memberi warna snackbar               
                 this.text = response.data.message; //memasukkan pesan ke snackbar               
@@ -184,15 +215,15 @@ export default {
             this.typeInput = 'edit';           
             this.dialog = true;           
             this.form.nama = item.nama;           
-            this.form.no_telp = item.no_telp;
-            this.form.alamat = item.alamat;
-            this.updatedId = item.id_supplier
-            console.log(item.id_supplier)
+            this.form.tgl_lhr = item.tgl_lhr;
+            this.updatedId = item.id_hewan
+            console.log(item.id_hewan)
         },
         
         deleteData(deleteId) { //mengahapus data             
-            var uri = this.$apiUrl + '/supplierlist/' + deleteId; //data dihapus berdasarkan id_supplier
-            this.$http.delete(uri).then(response =>{                 
+            this.pet.append('id_hewan', deleteId);
+            var uri = this.$apiUrl + '/data_hewan/delete'; //data dihapus berdasarkan id_ukuran
+            this.$http.post(uri, this.pet).then(response =>{ 
                 this.snackbar = true;                 
                 this.text = response.data.message;                 
                 this.color = 'green'                 
@@ -216,8 +247,7 @@ export default {
         resetForm(){             
             this.form = {               
                 nama : '',               
-                no_telp : '',
-                alamat : ''
+                tgl_lhr : ''
             }         
         }     
     },     

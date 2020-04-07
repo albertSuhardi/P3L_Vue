@@ -58,7 +58,6 @@
                             <v-col cols="12">
                                 <!-- <v-date-picker v-text-field v-model="date" prepend-icon="event" v-on="on" label="Tgl lahir*" required></v-date-picker> -->
                                 <v-menu
-                                    v-model="date"
                                     :close-on-content-click="false"
                                     :nudge-right="40"
                                     transition="scale-transition"

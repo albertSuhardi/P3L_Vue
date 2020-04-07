@@ -34,16 +34,16 @@
       return {
         items: [
           {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
+            src: 'https://image.slidesharecdn.com/pets-delight-161213010820/95/a-complete-and-reliable-pet-shop-in-the-uae-1-638.jpg?cb=1481591639',
           },
           {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
+            src: 'https://i1.wp.com/www.saferkidsandhomes.com/wp-content/uploads/2016/10/cara-merawat-hewan-peliharaan-memandikan-kucing-1.jpg?fit=750%2C436&ssl=1',
           },
           {
             src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
           },
           {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
+            src: 'https://img.okeinfo.net/content/2018/03/22/65/1876436/5-pilihan-pekerjaan-untuk-si-pencinta-hewan-40q85vEduu.jpg',
           },
         ],
         colors: [

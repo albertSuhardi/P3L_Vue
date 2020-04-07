@@ -59,7 +59,6 @@
                             <v-col cols="12">
                                 <!-- <v-date-picker v-text-field v-model="date" prepend-icon="event" v-on="on" label="Tgl lahir*" required></v-date-picker> -->
                                 <v-menu
-                                    v-model="date"
                                     :close-on-content-click="false"
                                     :nudge-right="40"
                                     transition="scale-transition"
@@ -96,10 +95,12 @@
                                 :rules="[rules.required, rules.min]"
                                 :type="show ? 'text' : 'password'"
                                 name="input-10-2"
-                                label="Password"
+                                label="Password*"
                                 hint="At least 8 characters"
                                 class="input-group--focused"
                                 @click:append="show = !show"
+                                v-model="form.password"
+                                required
                                 ></v-text-field>
                             </v-col>
                         </v-row>
@@ -156,9 +157,13 @@ export default {
                     value: 'no_telp'             
                 },
                 {               
+                    text: 'Role',               
+                    value: 'role'             
+                },        
+                {               
                     text: 'Username',               
                     value: 'username'             
-                },          
+                },        
                 {               
                     text: 'Aksi',
                     value: null,

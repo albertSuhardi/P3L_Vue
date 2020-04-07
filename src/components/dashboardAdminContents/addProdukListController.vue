@@ -79,6 +79,7 @@
                         <v-spacer></v-spacer>
                         <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
                         <v-btn color="blue darken-1" text @click="setForm()">Save</v-btn>
+                        <v-btn color="blue darken-1" text @click="uploadFoto()">Save Foto</v-btn>
                     </v-card-actions>
                 </v-card-text>
             </v-card>
@@ -252,6 +253,7 @@ export default {
                 this.sendData()             
             } else {               
                 this.updateData()             
+                this.uploadFoto()
             }         
         },   
 
@@ -274,19 +276,13 @@ export default {
         },
 
         uploadFoto(){
-           this.product.append('id_produk', deleteId);
-            var uri = this.$apiUrl + '/produk/delete'; //data dihapus berdasarkan id_ukuran
-            this.$http.post(uri, this.product).then(response =>{ 
-                this.snackbar = true;                 
-                this.text = response.data.message;                 
-                this.color = 'green'                 
-                this.deleteDialog = false;                 
+            this.product.append('id_produk', updatedId);
+            this.product.append('foto', form.foto);
+            var uri = this.$apiUrl + '/produk/foto'; //data dihapus berdasarkan id_ukuran
+            this.$http.post(uri, this.product).then(response =>{        
                 this.getData();             
             }).catch(error =>{                 
                 this.errors = error                 
-                this.snackbar = true;                 
-                this.text = 'Try Again';                 
-                this.color = 'red'; 
             })          
         }
     },     
