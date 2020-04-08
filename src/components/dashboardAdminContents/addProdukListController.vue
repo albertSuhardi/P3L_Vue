@@ -28,7 +28,7 @@
                                 <td>{{ item.min_stok }}</td>
                                 <td>{{ item.harga }}</td>
                                 <v-img class="white--text align-end" height="70px" width="50px"
-                                    v-bind:src="'http://localhost:8081/API_REST/upload/produk/'+item.foto">
+                                    v-bind:src="'http://localhost:8081/API_REST/upload/produk/' + item.foto">
                                 </v-img>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
@@ -79,7 +79,6 @@
                         <v-spacer></v-spacer>
                         <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
                         <v-btn color="blue darken-1" text @click="setForm()">Save</v-btn>
-                        <v-btn color="blue darken-1" text @click="uploadFoto()">Save Foto</v-btn>
                     </v-card-actions>
                 </v-card-text>
             </v-card>
@@ -198,7 +197,14 @@ export default {
                 min_stok : this.form.min_stok,
                 harga : this.form.harga
             }            
-            uri = this.$apiUrl + '/produk/' + this.updatedId;             
+            // this.product.append('nama', this.form.nama);             
+            // this.product.append('unit', this.form.unit);             
+            // this.product.append('stok', this.form.stok);
+            // this.product.append('min_stok', this.form.min_stok);  
+            // this.product.append('harga', this.form.harga);  
+            // this.product.append('foto', this.form.foto);
+            uri = this.$apiUrl + '/produk/foto' + this.updatedId;             
+            //var uri = this.$apiUrl + '/produk/foto' + this.updatedId;             
             this.load = true             
             this.$http.put(uri, this.$qs.stringify(requestBody)).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar               
@@ -207,16 +213,14 @@ export default {
                 this.load = false;               
                 this.dialog = false               
                 this.getData(); //mengambil data user               
-                this.resetForm();               
-                this.typeInput = 'new'; 
             }).catch(error =>{               
                 this.errors = error               
                 this.snackbar = true;               
                 this.text = 'Try Again';               
                 this.color = 'red';               
                 this.load = false;               
-                this.typeInput = 'new';           
-            })         
+            })
+            
         },   
 
         editHandler(item){           
@@ -229,6 +233,7 @@ export default {
             this.form.harga = item.harga;
             this.form.foto = null;        
             this.updatedId = item.id_produk;
+            console.log(item.id_pegawai)
         },
         
         deleteData(deleteId) { //mengahapus data             
@@ -252,10 +257,16 @@ export default {
             if (this.typeInput === 'new') {               
                 this.sendData()             
             } else {               
-                this.updateData()             
-                this.uploadFoto()
+                this.updateData(),             
+                this.updateFoto()
             }         
         },   
+
+        resetFormFoto(){             
+            this.form = {               
+                foto : null
+            }         
+        },
 
         resetForm(){             
             this.form = {               
@@ -263,7 +274,8 @@ export default {
                 unit : '',               
                 stok : '',
                 min_stok : '',
-                harga : ''
+                harga : '',
+                foto : null
             }         
         },
 
@@ -275,16 +287,26 @@ export default {
             reader.readAsDataURL(this.form.foto)
         },
 
-        uploadFoto(){
-            this.product.append('id_produk', updatedId);
-            this.product.append('foto', form.foto);
-            var uri = this.$apiUrl + '/produk/foto'; //data dihapus berdasarkan id_ukuran
-            this.$http.post(uri, this.product).then(response =>{        
-                this.getData();             
-            }).catch(error =>{                 
-                this.errors = error                 
-            })          
-        }
+        updateFoto(){             
+            this.product.append('id_pegawai', this.updatedId);
+            this.product.append('foto', this.form.foto);
+            var uri = this.$apiUrl + '/produk/foto';             
+            this.load = true             
+            this.$http.post(uri,this.product).then(response =>{ 
+                this.snackbar = true; //mengaktifkan snackbar               
+                this.color = 'green'; //memberi warna snackbar               
+                this.text = response.data.message; //memasukkan pesan ke snackbar               
+                this.load = false;               
+                this.dialog = false               
+                this.getData(); //mengambil data user           
+            }).catch(error =>{               
+                this.errors = error               
+                this.snackbar = true;               
+                this.text = 'Try Again';               
+                this.color = 'red';               
+                this.load = false;               
+            })         
+        },         
     },     
     mounted(){         
         this.getData();     

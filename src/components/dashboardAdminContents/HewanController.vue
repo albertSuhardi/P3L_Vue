@@ -2,31 +2,43 @@
     <v-container>
         <v-card>
             <v-container grid-list-md mb-0>
-                <h2 class="text-md-center">Hewan</h2>
+                <h2 class="text-md-center">Data Hewan</h2>
                 <v-layout row wrap style="margin:10px">
                     <v-flex xs6>
                         <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
-                            @click="dialog = true">
-                            <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                            Masukkan Data Hewan Baru
+                            @click="dialog = true" >
+                            <v-icon size="18" class="mr-2" >mdi-pencil-plus</v-icon>
+                            Tambah Hewan
                         </v-btn>
                     </v-flex>
                     <v-flex xs6 class="text-right">
-                        <v-text-field v-model="keyword" append-icon="mdi-search-web" label="Search" hide-details>
+                        <v-text-field 
+                        v-model="search" 
+                        append-icon="mdi-search-web" 
+                        label="Search Tanggal" 
+                        hide-details
+                        text
+                        >
                         </v-text-field>
                     </v-flex>
                 </v-layout>
 
-                <v-data-table :headers="headers" :items="pets" :search="keyword" :loading="load">
+                <v-data-table 
+                :headers="headers" 
+                :items="data_hewans"  
+                :loading="load"
+                :search="search">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_hewan">
                                 <td>{{ index + 1 }}</td>
-                                <td>{{ item.nama }}</td>
-                                <td>{{ item.id_jenis }}</td>
-                                <td>{{ item.tgl_lhr}}</td>
+                                <td>{{ item.nama}}</td>
+                                <td>{{ item.ukuran }}</td>
+                                <td>{{ item.jenis }}</td>
+                                <td>{{ item.tgl_lhr }}</td>
+                                <td>{{ item.nama_member }}</td>
                                 <td class="text-center">
-                                    <v-btn icon color="indigo" light @click="editHandler(item)">
+                                    <v-btn icon color="indigo" dark @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
                                     </v-btn>
                                     <v-btn icon color="error" light @click="deleteData(item.id_hewan)">
@@ -48,23 +60,17 @@
                     <v-container>
                         <v-row>
                             <v-col cols="12">
-                                <v-text-field label="Nama*" v-model="form.nama" required></v-text-field>
+                                <v-text-field label="Nama Hewan*" v-model="form.nama_hewan" required></v-text-field>
                             </v-col>
                             <v-col cols="12">
-                                <v-select v-model="select.jenis" :hint="`${select.jenis}`"
-                                    :items="types"
-                                    item-text="Jenis Hewan"
-                                    item-value="abbr"
-                                    label="Select"
-                                    persistent-hint
-                                    return-object
-                                    single-line
-                                    >{{ select.jenis }}</v-select>
+                                <v-select :items="nama_ukuran_array" v-model="form.ukuran_hewan" label="Ukuran Hewan" autocomplete></v-select>
+                            </v-col>
+                            <v-col cols="12">
+                                <v-select :items="nama_jenis_array" v-model="form.jenis_hewan" label="Jenis Hewan" autocomplete></v-select>
                             </v-col>
                             <v-col cols="12">
                                 <!-- <v-date-picker v-text-field v-model="date" prepend-icon="event" v-on="on" label="Tgl lahir*" required></v-date-picker> -->
                                 <v-menu
-                                    v-model="date"
                                     :close-on-content-click="false"
                                     :nudge-right="40"
                                     transition="scale-transition"
@@ -83,13 +89,40 @@
                                     <v-date-picker v-model="form.tgl_lhr" @input="menu2 = false" required></v-date-picker>
                                 </v-menu>
                             </v-col>
+                            <v-col cols="12">
+
+                                <v-select :items="nama_member_array" v-model="form.nama_member" label="Nama Pemilik" autocomplete></v-select>
+                                <!-- <v-autocomplete
+                                    v-model="model"
+                                    :loading="isLoading"
+                                    :search-input.sync="keyword"
+                                    color="black"
+                                    hide-no-data
+                                    hide-selected
+                                    item-text="Description"
+                                    item-value="API"
+                                    label="Public APIs"
+                                    placeholder="Start typing to Search"
+                                    prepend-icon="mdi-database-search"
+                                    return-object
+                                ></v-autocomplete> -->
+
+                                <!-- <v-autocomplete 
+                                label="Pemilik*" 
+                                v-model="form.pemilik" 
+                                required
+                                :suggestions="cities" 
+                                :selection.sync="value"
+                                ></v-autocomplete> -->
+                                <!-- <v-text-field label="Pemilik*" v-model="form.pemilik" required></v-text-field> -->
+                            </v-col>
                         </v-row>
                     </v-container>
                     <small>*indicates required field</small>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
+                    <v-btn color="blue darken-1" text  @click="resetForm()">Close</v-btn>
                     <v-btn color="blue darken-1" text @click="setForm()">Save</v-btn>
                 </v-card-actions>
             </v-card>
@@ -107,77 +140,159 @@ import { log } from 'util'
 export default {    
     data () {       
         return {         
+            search: '',
+            show: true,
+            rules: {
+                required: value => !!value || 'Required.',
+                min: v => v.length >= 8 || 'Min 8 characters',
+            },
             dialog: false,         
-            keyword: '',         
+            id_ukuran: '',
+            id_jenis: '',
+            id_member: '',
+            //Objek Jenis
+            AllJenisHewan: [],
+            nama_jenis_array : [],
+            //Objek Ukuran
+            AllUkuranHewan:[],
+            nama_ukuran_array : [],
+            //Objek Member
+            AllDataMember:[],
+            nama_member_array : [],
             headers: [             
                 {               
                     text: 'No',               
-                    value: 'id_hewan',             
+                    value: 'no',             
+                },            
+                {               
+                    text: 'Nama Hewan',               
+                    value: 'nama_hewan',             
                 },             
                 {               
-                    text: 'Nama',               
-                    value: 'nama'             
+                    text: 'Ukuran Hewan',               
+                    value: 'ukuran_hewan'             
                 },             
                 {               
                     text: 'Jenis Hewan',               
-                    value: 'jenis_hewan.jenis'             
+                    value: 'jenis_hewan'             
                 },
                 {               
                     text: 'Tanggal Lahir',               
                     value: 'tgl_lhr'             
                 },
                 {               
+                    text: 'Pemilik',               
+                    value: 'pemilik'             
+                },           
+                {               
                     text: 'Aksi',
                     value: null,
                     sortable: false
                 },         
             ],         
-            pets: [],
-            types: [],         
+            data_hewans: [],         
+            AllNamaMember: [],
             snackbar: false,          
             color: null,         
             text: '',          
             load: false, 
             form: {            
-                nama : '',           
-                tgl_lhr : ''
+                pemilik : '',           
+                nama_hewan : '',           
+                ukuran_hewan : '',
+                jenis_hewan : '',
+                tgl_lhr : '',
             },         
-            select: {            
-                jenis : ''
-            },       
-            type : new FormData,           
-            pet : new FormData,         
+            data_hewan : new FormData,         
             typeInput: 'new',        
             errors : '',         
-            updatedId : '',       
+            UpdatedID : '', 
         }     
     },     
     methods:{         
-        getData(){             
+        getData(){           
+            var idJenis, idUkuran;
             var uri = this.$apiUrl + '/data_hewan'             
             this.$http.get(uri).then(response =>{                 
-                this.pets=response.data.data             
+                var temp =response.data.data 
+                this.data_hewans = temp
             })               
-        },
-        getType(){             
+            
+        },   
+        getDataJenis(){             
+            var temp;
             var uri = this.$apiUrl + '/jenis_hewan'             
             this.$http.get(uri).then(response =>{                 
-                this.types=response.data.data             
+                temp = response.data.data             
+                this.AllJenisHewan = temp
+                temp.forEach(row =>{
+                    this.nama_jenis_array.push(row.jenis)
+                });
             })               
-        },         
+        },
+        getDataUkuran(){             
+            var temp;
+            var uri = this.$apiUrl + '/ukuran_hewan'             
+            this.$http.get(uri).then(response =>{                 
+                temp = response.data.data             
+                this.AllUkuranHewan = temp
+                temp.forEach(row => {
+                    this.nama_ukuran_array.push(row.ukuran)
+                });
+            })               
+        },
+        getDataMember(){             
+            var temp;
+            var uri = this.$apiUrl + '/member'             
+            this.$http.get(uri).then(response =>{                 
+                temp =response.data.data             
+                this.AllDataMember = temp
+                temp.forEach(row => {
+                    this.nama_member_array.push(row.nama)
+                });
+            })               
+        },       
         sendData(){
-            this.pet.append('nama', this.form.nama);      
-            this.pet.append('tgl_lhr', this.form.tgl_lhr);       
-            this.pet.append('id_hewan', 1);
+            var idJenis , idUkuran , idMember;
+            this.data_hewan.append('nama', this.form.nama_hewan);  
+            //Ambil id jenis dari membandingkannya dengan inputan
+            this.AllJenisHewan.forEach(row => {
+                if(row.jenis === this.form.jenis_hewan){
+                    idJenis = row.id_jenis
+                }
+            })
+            console.log("Ini ID JENIS : " +idJenis)    
+            this.data_hewan.append('id_jenis', idJenis);
+            //Ambil id Ukuran
+            this.AllUkuranHewan.forEach(row => {
+                if(row.ukuran === this.form.ukuran_hewan){
+                    idUkuran = row.id_ukuran
+                }
+            })
+            console.log("Ini Id Ukuran : " + idUkuran)    
+            this.data_hewan.append('id_ukuran', idUkuran);
+            //Ambil id member
+            this.AllDataMember.forEach(row => {
+                if(row.nama === this.form.nama_member){
+                    idMember = row.id_member
+                }
+            })
+            console.log("Ini Id member : " + idMember)           
+            this.data_hewan.append('id_member', idMember);
+            this.data_hewan.append('id_pegawai_cs', 5);
+            this.data_hewan.append('id_pegawai_kasir', 5);
+            this.data_hewan.append('created_by', 5);
+            this.data_hewan.append('tgl_lhr', this.form.tgl_lhr);
+            this.data_hewan.append('id_hewan', 1);
             var uri =this.$apiUrl + '/data_hewan'             
             this.load = true             
-            this.$http.post(uri,this.pet).then(response =>{               
+            this.$http.post(uri,this.data_hewan).then(response =>{               
                 this.snackbar = true; //mengaktifkan snackbar               
                 this.color = 'green'; //memberi warna snackbar               
                 this.text = response.data.message; //memasukkan pesan ke snackbar               
                 this.load = false;               
                 this.dialog = false               
-                this.getData(); //mengambil data supplier         
+                this.getData(); //mengambil data pegawai               
                 this.resetForm();           
             }).catch(error =>{               
                 this.errors = error               
@@ -186,44 +301,78 @@ export default {
                 this.color = 'red';               
                 this.load = false;           
             })         
-        },         
-        updateData(){             
-            this.pet.append('nama', this.form.nama);      
-            this.pet.append('tgl_lhr', this.form.tgl_lhr);       
-            this.pet.append('id_hewan', 1);
-            var uri = this.$apiUrl + '/data_hewan/' + this.updatedId;             
+        },
+        updateData(){
+            console.log("MASUK UPDATE DATA")
+            var idJenis , idUkuran , idMember;
+            this.data_hewan.append('nama', this.form.nama_hewan);  
+            //Ambil id jenis dari membandingkannya dengan inputan
+            this.AllJenisHewan.forEach(row => {
+                if(row.jenis === this.form.jenis_hewan){
+                    idJenis = row.id_jenis
+                }
+            })
+            console.log("Ini ID JENIS : " +idJenis)    
+            this.data_hewan.append('id_jenis', idJenis);
+            //Ambil id Ukuran
+            this.AllUkuranHewan.forEach(row => {
+                if(row.ukuran === this.form.ukuran_hewan){
+                    idUkuran = row.id_ukuran
+                }
+            })
+            console.log("Ini Id Ukuran : " + idUkuran)    
+            this.data_hewan.append('id_ukuran', idUkuran);
+            //Ambil id member
+            this.AllDataMember.forEach(row => {
+                if(row.nama === this.form.nama_member){
+                    idMember = row.id_member
+                }
+            })
+            console.log("Ini Id member : " + idMember)
+            this.data_hewan.append('id_member', idMember);
+            this.data_hewan.append('id_pegawai_cs', 5);
+            this.data_hewan.append('id_pegawai_kasir', 5);
+            this.data_hewan.append('tgl_lhr', this.form.tgl_lhr);
+            this.data_hewan.append('id_hewan', this.UpdatedID);
+            var uri =this.$apiUrl + '/data_hewan/edit'             
             this.load = true             
-            this.$http.post(uri,this.pet).then(response =>{ 
+           this.$http.post(uri,this.data_hewan).then(response =>{               
                 this.snackbar = true; //mengaktifkan snackbar               
                 this.color = 'green'; //memberi warna snackbar               
                 this.text = response.data.message; //memasukkan pesan ke snackbar               
                 this.load = false;               
                 this.dialog = false               
-                this.getData(); //mengambil data supplier         
-                this.resetForm();               
-                this.typeInput = 'new';           
+                this.getData(); //mengambil data pegawai               
+                this.resetForm();           
             }).catch(error =>{               
                 this.errors = error               
                 this.snackbar = true;               
                 this.text = 'Try Again';               
                 this.color = 'red';               
-                this.load = false;               
-                this.typeInput = 'new';           
+                this.load = false;           
             })         
-        },         
+        },           
+
         editHandler(item){           
             this.typeInput = 'edit';           
             this.dialog = true;           
-            this.form.nama = item.nama;           
-            this.form.tgl_lhr = item.tgl_lhr;
-            this.updatedId = item.id_hewan
-            console.log(item.id_hewan)
+            this.form.nama_hewan = item.nama;           
+            this.form.ukuran_hewan = item.ukuran;           
+            this.form.jenis_hewan = item.jenis,
+            this.form.tgl_lhr = item.tgl_lhr,        
+            this.form.nama_member = item.nama_member,             
+            this.UpdatedID = item.id_hewan
+            console.log("Ini id hewan yang terpilih : " + item.id_hewan);
+            console.log("UPDATED ID : " + this.UpdatedID);
         },
         
         deleteData(deleteId) { //mengahapus data             
-            this.pet.append('id_hewan', deleteId);
+            this.data_hewan.append('id_hewan', deleteId);
+            this.data_hewan.append('deleted_by', 5);
+            console.log("Ini ID yg mau di delete : " + deleteId)
+            console.log("Ini ID yg nge delete : " + 5)
             var uri = this.$apiUrl + '/data_hewan/delete'; //data dihapus berdasarkan id_ukuran
-            this.$http.post(uri, this.pet).then(response =>{ 
+            this.$http.post(uri, this.data_hewan).then(response =>{ 
                 this.snackbar = true;                 
                 this.text = response.data.message;                 
                 this.color = 'green'                 
@@ -246,13 +395,28 @@ export default {
         },         
         resetForm(){             
             this.form = {               
-                nama : '',               
-                tgl_lhr : ''
-            }         
+                nama_hewan : '',               
+                ukuran_hewan : '',               
+                jenis_hewan : '',
+                tgl_lhr : '',     
+                nama_member : ''
+            }
+            this.dialog = false
+            this.typeInput = 'new'         
         }     
+    },
+     computed: {
+        filteredList() {
+        return this.data_hewans.filter(item => {
+            return item.nama.toLowerCase().includes(this.search.toLowerCase())
+        })
+        }
     },     
     mounted(){         
-        this.getData();     
+        this.getData();
+        this.getDataJenis();
+        this.getDataUkuran();
+        this.getDataMember();
         }, 
     } 
 </script> 
