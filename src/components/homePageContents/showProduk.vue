@@ -1,55 +1,74 @@
 <template>
-  <v-card
-    class="mx-auto"
-    max-width="344"
-  >
-    <v-img
-      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-      height="200px"
-    ></v-img>
+  <v-container fluid>
+    <v-data-iterator :items="shows" :search="search" hide-default-footer >
+      <template v-slot:header>
+        <v-toolbar class="mb-2" color="white" flat >
+          <v-toolbar-title>List Produk</v-toolbar-title>
+          <v-text-field class="ml-12" v-model="search" append-icon="mdi-search-web" label="Search" single-line hide-details></v-text-field>
+        </v-toolbar>
+      </template>
+      <template v-slot:default="props">
+        <v-row>
+            <v-col v-for="item in props.items" :key="item.title" cols="12" sm="6" md="4" lg="3">
+                <v-card>
+                    <v-img class="white--text align-end" height="200px" v-bind:src="'http://localhost:8081/API_REST/upload/produk/' + item.foto"></v-img>
 
-    <v-card-title>
-      Top western road trips
-    </v-card-title>
+                    <v-divider></v-divider>
 
-    <v-card-subtitle>
-      1,000 miles of wonder
-    </v-card-subtitle>
+                    <v-list dense>
+                        <v-list-item>
+                        <v-list-item-content>Produk</v-list-item-content>
+                        <v-list-item-content class="align-end">: {{ item.nama }}</v-list-item-content>
+                        </v-list-item>
 
-    <v-card-actions>
-      <v-spacer></v-spacer>
+                        <v-list-item>
+                        <v-list-item-content>Berat Bersih</v-list-item-content>
+                        <v-list-item-content class="align-end">: {{ item.unit }}</v-list-item-content>
+                        </v-list-item>
 
-      <v-btn
-        icon
-        @click="show = !show"
-      >
-        <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-      </v-btn>
-    </v-card-actions>
+                        <v-list-item>
+                        <v-list-item-content>Stok</v-list-item-content>
+                        <v-list-item-content class="align-end">: {{ item.stok }}</v-list-item-content>
+                        </v-list-item>
+                    </v-list>
 
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-
-        <v-card-text>
-          I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
-        </v-card-text>
-      </div>
-    </v-expand-transition>
-  </v-card>
+                    <v-divider></v-divider>
+                </v-card>
+          </v-col>
+        </v-row>
+      </template>
+    </v-data-iterator>
+  </v-container>
 </template>
 
 <script>
-  export default {
-    data: () => ({
-      show: false,
-    }),
-  }
+export default {
+        data() {
+            return {
+                dialog: false,
+                keyword: '',
+                shows: [],
+                snackbar: false,
+                search: '',
+                text: '',
+                errors: '',
+                updatedId: '',
+                load: false,
+                request : new FormData,
+                x: null,
+                y: 'top'
+            }
+        },
+        methods: {
+            getData() {
+                var uri = this.$apiUrl + '/produk'
+                this.$http.get(uri).then(response => {
+                    this.shows = response.data.data
+                })
+            },
+        },
+        mounted() {
+            this.getData();
+        },
+    }
 </script>
-
-<style lang="scss" scoped>
-.v-card {
-  align-content: center;
-  margin-top: 2%;
-}
-</style>

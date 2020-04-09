@@ -197,30 +197,25 @@ export default {
                 min_stok : this.form.min_stok,
                 harga : this.form.harga
             }            
-            // this.product.append('nama', this.form.nama);             
-            // this.product.append('unit', this.form.unit);             
-            // this.product.append('stok', this.form.stok);
-            // this.product.append('min_stok', this.form.min_stok);  
-            // this.product.append('harga', this.form.harga);  
-            // this.product.append('foto', this.form.foto);
-            uri = this.$apiUrl + '/produk/foto' + this.updatedId;             
-            //var uri = this.$apiUrl + '/produk/foto' + this.updatedId;             
+            uri = this.$apiUrl + '/produk/' + this.updatedId;             
             this.load = true             
             this.$http.put(uri, this.$qs.stringify(requestBody)).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar               
                 this.color = 'green'; //memberi warna snackbar               
-                this.text = response.data.message; //memasukkan pesan ke snackbar               
+                this.text = response.data.status; //memasukkan pesan ke snackbar               
                 this.load = false;               
                 this.dialog = false               
-                this.getData(); //mengambil data user               
+                this.getData(); //mengambil data ukuran          
+                //this.resetForm();               
+                this.typeInput = 'new';           
             }).catch(error =>{               
                 this.errors = error               
                 this.snackbar = true;               
                 this.text = 'Try Again';               
                 this.color = 'red';               
                 this.load = false;               
-            })
-            
+                this.typeInput = 'new';           
+            })         
         },   
 
         editHandler(item){           
@@ -274,8 +269,7 @@ export default {
                 unit : '',               
                 stok : '',
                 min_stok : '',
-                harga : '',
-                foto : null
+                harga : ''
             }         
         },
 

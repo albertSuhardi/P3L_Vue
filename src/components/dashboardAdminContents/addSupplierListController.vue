@@ -156,18 +156,18 @@ export default {
             requestBody = {
                 id_supplier : this.updatedId,
                 nama : this.form.nama,
-                alamat : this.form.alamat,
-                no_telp : this.form.no_telp
+                no_telp : this.form.no_telp,
+                alamat : this.form.alamat
             }                     
             uri = this.$apiUrl + '/supplier/' + this.updatedId;             
             this.load = true             
-            this.$http.post(uri,this.supplier).then(response =>{ 
+            this.$http.put(uri, this.$qs.stringify(requestBody)).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar               
                 this.color = 'green'; //memberi warna snackbar               
-                this.text = response.data.message; //memasukkan pesan ke snackbar               
+                this.text = response.data.status; //memasukkan pesan ke snackbar               
                 this.load = false;               
                 this.dialog = false               
-                this.getData(); //mengambil data supplier         
+                this.getData(); //mengambil data ukuran          
                 this.resetForm();               
                 this.typeInput = 'new';           
             }).catch(error =>{               
