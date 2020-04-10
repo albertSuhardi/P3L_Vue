@@ -119,6 +119,12 @@ const routes = [
             name: 'addAccountController',
             meta: { requiresCS: true}, 
             component: loadPegawaiPage('addAccountController') 
+        },
+        { 
+          path: '/dashboardPegawai/addProdukCS',            
+          name: 'addProdukCSController',
+          meta: { requiresCS: true}, 
+          component: loadPegawaiPage('addProdukCSController') 
         }
     ] 
 },
@@ -189,7 +195,7 @@ router.beforeEach((to, from, next) => {
   }
 })
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresCS)) {
+  if (to.matched.some(record => record.meta.requiresKasir)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
     if ((localStorage.getItem('role'))!= 'KASIR' ) {

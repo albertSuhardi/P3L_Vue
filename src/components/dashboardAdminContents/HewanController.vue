@@ -27,6 +27,9 @@
                                 <td>{{ item.jenis }}</td>
                                 <td>{{ item.tgl_lhr }}</td>
                                 <td>{{ item.nama_member }}</td>
+                                <td>{{ item.created_at }}</td>
+                                <td>{{ item.update_at }}</td>
+                                <td>{{ item.aktor }}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" dark @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
@@ -132,6 +135,18 @@ export default {
                 {               
                     text: 'Pemilik',               
                     value: 'nama_member'             
+                },
+                {               
+                    text: 'Dibuat Tanggal',               
+                    value: 'created_at'             
+                },
+                {               
+                    text: 'Diubah Tanggal',               
+                    value: 'update_at'             
+                },
+                {               
+                    text: 'Aktor',               
+                    value: 'aktor'             
                 },           
                 {               
                     text: 'Aksi',
@@ -246,7 +261,7 @@ export default {
             this.data_hewan.append('id_member', idMember);
             this.data_hewan.append('id_pegawai_cs', 5);
             this.data_hewan.append('id_pegawai_kasir', 5);
-            this.data_hewan.append('created_by', 5);
+            this.data_hewan.append('aktor', 5);
             this.data_hewan.append('tgl_lhr', this.form.tgl_lhr);
             this.data_hewan.append('id_hewan', 1);
             var uri =this.$apiUrl + '/data_hewan'             
@@ -297,6 +312,7 @@ export default {
             this.data_hewan.append('id_member', idMember);
             this.data_hewan.append('id_pegawai_cs', 5);
             this.data_hewan.append('id_pegawai_kasir', 5);
+            this.data_hewan.append('aktor', 5);
             this.data_hewan.append('tgl_lhr', this.form.tgl_lhr);
             this.data_hewan.append('id_hewan', this.UpdatedID);
             var uri =this.$apiUrl + '/data_hewan/edit'             
@@ -333,7 +349,7 @@ export default {
         
         deleteData(deleteId) { //mengahapus data             
             this.data_hewan.append('id_hewan', deleteId);
-            this.data_hewan.append('deleted_by', 5);
+            this.data_hewan.append('aktor', 5);
             console.log("Ini ID yg mau di delete : " + deleteId)
             console.log("Ini ID yg nge delete : " + 5)
             var uri = this.$apiUrl + '/data_hewan/delete'; //data dihapus berdasarkan id_ukuran

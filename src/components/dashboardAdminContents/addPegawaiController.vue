@@ -28,6 +28,8 @@
                                 <td>{{ item.no_telp }}</td>
                                 <td>{{ item.role }}</td>
                                 <td>{{ item.username }}</td>
+                                <td>{{ item.created_at}}</td>
+                                <td>{{ item.update_at}}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
@@ -163,6 +165,14 @@ export default {
                 {               
                     text: 'Username',               
                     value: 'username'             
+                },
+                {               
+                    text: 'Dibuat Tanggal',               
+                    value: 'created_at'             
+                },
+                {               
+                    text: 'Diupdate Tanggal',               
+                    value: 'update_at'             
                 },        
                 {               
                     text: 'Aksi',

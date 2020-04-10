@@ -85,7 +85,8 @@ export default {
           this.$router.push({ path: "/dashboardAdmin"});
         }else if(localStorage.getItem('role') == "CS"){
           this.$router.push({ path: "/dashboardPegawai"});
-        }else if(localStorage.getItem('role') == "KASIR"){
+        }
+        else if(localStorage.getItem('role') == "KASIR"){
           this.$router.push({ path: "/dashboardKasir"});
         }
       } else {
@@ -154,7 +155,7 @@ export default {
               this.$router.push({
                 path: "/dashboardPegawai"
               });
-            }else{
+            }else if(response.data.message == "KASIR"){
               this.snackbar = true;
               this.color = 'green';
               this.text = response.data.message;
@@ -167,13 +168,12 @@ export default {
               console.log(localStorage.getItem("id_pegawai"));
 
               
-              // this.$session.set('id_pegawai', response.data.id_pegawai);
-              // console.log(response.data.data);
-              // console.log(this.$session.get('id_pegawai'));
+              this.$session.set('id_pegawai', response.data.id_pegawai);
+              console.log(response.data.data);
+              console.log(this.$session.get('id_pegawai'));
 
-              this.$router.push({
-                path: "/dashboardKasir"
-              });
+              this.$router.replace({ path : '/dashboardKasir' });              
+              
             }
             
           }

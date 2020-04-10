@@ -25,6 +25,8 @@
                                 <td>{{ item.nama }}</td>
                                 <td>{{ item.no_telp}}</td>
                                 <td>{{ item.alamat}}</td>
+                                <td>{{ item.created_at }}</td>
+                                <td>{{ item.update_at }}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
@@ -99,6 +101,14 @@ export default {
                     text: 'Alamat',               
                     value: 'alamat'             
                 },
+                {
+                    text: 'Dibuat Tanggal',
+                    value: 'created_at'
+                },
+                {
+                    text: 'Diupdate Tanggal',
+                    value: 'update_at'
+                }, 
                 {               
                     text: 'Aksi',
                     value: null,

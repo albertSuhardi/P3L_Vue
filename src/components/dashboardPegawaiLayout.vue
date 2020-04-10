@@ -48,6 +48,7 @@
         drawer: null,
         items: [
             { title: 'Profile', icon: 'mdi-account-heart', name: 'addAccountController'},
+            { title: 'Produk', icon: 'mdi-notebook-multiple', name: 'addProdukCSController'},
         ],
         }
     },

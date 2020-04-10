@@ -27,6 +27,9 @@
                                 <td>{{ item.tgl_lhr }}</td>
                                 <td>{{ item.no_telp }}</td>
                                 <td>{{ item.status }}</td>
+                                <td>{{ item.created_at}}</td>
+                                <td>{{ item.update_at}}</td>
+                                <td>{{ item.aktor}}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
@@ -135,7 +138,19 @@ export default {
                 {               
                     text: 'Status',               
                     value: 'status'             
-                },          
+                },       
+                {               
+                    text: 'Dibuat Tanggal',               
+                    value: 'created_at'             
+                },
+                {               
+                    text: 'Diupdate Tanggal',               
+                    value: 'update_at'             
+                },
+                {               
+                    text: 'Aktor',               
+                    value: 'aktor'             
+                },                
                 {               
                     text: 'Aksi',
                     value: null,
@@ -173,6 +188,7 @@ export default {
             this.member.append('tgl_lhr', this.form.tgl_lhr);
             this.member.append('no_telp', this.form.no_telp);
             this.member.append('status', this.form.status);
+            this.member.append('aktor', localStorage.getItem('id_pegawai'));
             this.member.append('id_member', 1);
             var uri =this.$apiUrl + '/member'             
             this.load = true             
@@ -200,7 +216,8 @@ export default {
                 harga : this.form.harga,
                 tgl_lhr : this.form.tgl_lhr,
                 no_telp : this.form.no_telp,
-                status : this.form.status
+                status : this.form.status,
+                aktor : localStorage.getItem('id_pegawai')
             }
             uri = this.$apiUrl + '/member/' + this.updatedId;             
             this.load = true             
@@ -234,7 +251,8 @@ export default {
             console.log(item.id_member)
         },
         
-        deleteData(deleteId) { //mengahapus data             
+        deleteData(deleteId) { //mengahapus data    
+            this.service.append('aktor', localStorage.getItem('id_pegawai'));         
             this.member.append('id_member', deleteId);
             var uri = this.$apiUrl + '/member/delete'; //data dihapus berdasarkan id_ukuran
             this.$http.post(uri, this.member).then(response =>{ 

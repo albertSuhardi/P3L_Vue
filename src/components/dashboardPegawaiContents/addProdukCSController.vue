@@ -4,13 +4,6 @@
             <v-container grid-list-md mb-0>
                 <h2 class="text-md-center">List Produk</h2>
                 <v-layout row wrap style="margin:10px">
-                    <v-flex xs6>
-                        <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
-                            @click="dialog = true">
-                            <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                            Tambah Produk
-                        </v-btn>
-                    </v-flex>
                     <v-flex xs6 class="text-right">
                         <v-text-field v-model="keyword" append-icon="mdi-magnify" label="Search" hide-details>
                         </v-text-field>
@@ -27,8 +20,6 @@
                                 <td>{{ item.stok }}</td>
                                 <td>{{ item.min_stok }}</td>
                                 <td>{{ item.harga }}</td>
-                                <td>{{ item.created_at }}</td>
-                                <td>{{ item.update_at }}</td>
                                 <v-img class="white--text align-end" height="70px" width="50px"
                                     v-bind:src="'http://localhost:8081/API_REST/upload/produk/' + item.foto">
                                 </v-img>
@@ -125,14 +116,6 @@ export default {
                 {               
                     text: 'Harga',               
                     value: 'harga'             
-                },
-                {
-                    text: 'Dibuat Tanggal',
-                    value: 'created_at'
-                },
-                {
-                    text: 'Diupdate Tanggal',
-                    value: 'update_at'
                 }, 
                 {
                     text: 'Foto',

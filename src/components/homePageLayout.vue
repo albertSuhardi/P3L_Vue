@@ -14,6 +14,10 @@
       <v-toolbar-items>
         <v-btn text router to="/showProduk">Product</v-btn>
       </v-toolbar-items>
+
+      <v-toolbar-items>
+        <v-btn text router to="/signDual">Sign In</v-btn>
+      </v-toolbar-items>
     </v-app-bar>
     
     <v-content>

@@ -26,6 +26,7 @@
                                 <td>{{ item.harga}}</td>
                                 <td>{{ item.created_at}}</td>
                                 <td>{{ item.update_at}}</td>
+                                <td>{{ item.aktor}}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
@@ -100,6 +101,10 @@ export default {
                 {               
                     text: 'Diupdate Tanggal',               
                     value: 'update_at'             
+                },
+                {               
+                    text: 'Aktor',               
+                    value: 'aktor'             
                 },             
                 {               
                     text: 'Aksi',
@@ -132,6 +137,7 @@ export default {
         sendData(){
             this.service.append('nama', this.form.nama);      
             this.service.append('harga', this.form.harga);       
+            this.service.append('aktor', localStorage.getItem('id_pegawai'));
             this.service.append('id_layanan', 1);
             var uri =this.$apiUrl + '/layanan'             
             this.load = true             
@@ -156,7 +162,8 @@ export default {
             requestBody = {
                 id_layanan : this.updatedId,
                 nama : this.form.nama,
-                harga : this.form.harga
+                harga : this.form.harga,
+                aktor : localStorage.getItem('id_pegawai')
             }
             uri = this.$apiUrl + '/layanan/' + this.updatedId;             
             this.load = true             
@@ -187,7 +194,8 @@ export default {
             console.log(item.id_layanan)
         },
         
-        deleteData(deleteId) { //mengahapus data             
+        deleteData(deleteId) { //mengahapus data      
+            this.service.append('aktor', localStorage.getItem('id_pegawai'));       
             this.service.append('id_layanan', deleteId);
             var uri = this.$apiUrl + '/layanan/delete'; //data dihapus berdasarkan id_ukuran
             this.$http.post(uri, this.service).then(response =>{ 

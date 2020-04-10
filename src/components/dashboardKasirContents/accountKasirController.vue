@@ -21,8 +21,8 @@
                                     <v-text-field append-icon="mdi-calendar-account" name="tgl_lhr" label="Tanggal Lahir" type="date"
                                         v-model="tgl_lhr" height="34" disabled="disabled"></v-text-field>
 
-                                    <v-text-field append-icon="mdi-account" name="username" label="Username" type="text"
-                                        v-model="username" height="34" disabled="disabled"></v-text-field>
+                                    <v-text-field append-icon="mdi-book-account-outline" name="role" label="Jabatan" type="text"
+                                        v-model="role" height="34" disabled="disabled"></v-text-field>
 
                                     <v-text-field append-icon="mdi-home" name="alamat" label="Alamat" type="text"
                                         v-model="alamat" height="34"></v-text-field>
@@ -91,7 +91,7 @@ export default {
                     if(this.employee[i].id_pegawai == localStorage.getItem('id_pegawai')){
                         this.nama = this.employee[i].nama
                         this.tgl_lhr = this.employee[i].tgl_lhr
-                        this.username = this.employee[i].username
+                        this.role = this.employee[i].role
                         this.no_telp = this.employee[i].no_telp
                         this.alamat = this.employee[i].alamat
                     }
