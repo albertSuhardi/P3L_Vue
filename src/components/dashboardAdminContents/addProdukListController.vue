@@ -198,6 +198,7 @@ export default {
                 harga : this.form.harga
             }            
             uri = this.$apiUrl + '/produk/' + this.updatedId;             
+              
             this.load = true             
             this.$http.put(uri, this.$qs.stringify(requestBody)).then(response =>{ 
                 this.snackbar = true; //mengaktifkan snackbar               
@@ -206,7 +207,7 @@ export default {
                 this.load = false;               
                 this.dialog = false               
                 this.getData(); //mengambil data ukuran          
-                //this.resetForm();               
+                this.resetForm();               
                 this.typeInput = 'new';           
             }).catch(error =>{               
                 this.errors = error               
@@ -227,8 +228,8 @@ export default {
             this.form.min_stok = item.min_stok;
             this.form.harga = item.harga;
             this.form.foto = null;        
-            this.updatedId = item.id_produk;
-            console.log(item.id_pegawai)
+            this.updatedId = item.id_produk
+            console.log(item.id_produk)
         },
         
         deleteData(deleteId) { //mengahapus data             
@@ -252,7 +253,7 @@ export default {
             if (this.typeInput === 'new') {               
                 this.sendData()             
             } else {               
-                this.updateData(),             
+                this.updateData(),
                 this.updateFoto()
             }         
         },   
@@ -282,7 +283,7 @@ export default {
         },
 
         updateFoto(){             
-            this.product.append('id_pegawai', this.updatedId);
+            this.product.append('id_produk', this.updatedId);
             this.product.append('foto', this.form.foto);
             var uri = this.$apiUrl + '/produk/foto';             
             this.load = true             
@@ -292,13 +293,15 @@ export default {
                 this.text = response.data.message; //memasukkan pesan ke snackbar               
                 this.load = false;               
                 this.dialog = false               
-                this.getData(); //mengambil data user           
+                this.getData(); //mengambil data user  
+                this.typeInput = 'new';           
             }).catch(error =>{               
                 this.errors = error               
                 this.snackbar = true;               
                 this.text = 'Try Again';               
                 this.color = 'red';               
-                this.load = false;               
+                this.load = false;    
+                this.typeInput = 'new';             
             })         
         },         
     },     

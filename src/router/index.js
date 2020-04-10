@@ -6,6 +6,7 @@ import Router from 'vue-router'
 const HomePageLayout = () => import('../components/homePageLayout.vue')
 const DashboardAdminLayout = () => import('../components/dashboardAdminLayout.vue')
 const DashboardPegawaiLayout = () => import('../components/dashboardPegawaiLayout.vue')
+const DashboardKasirLayout = () => import('../components/dashboardKasirLayout.vue')
 
 // function loadView(view) {
 //     return () => import( /* webpackChunkName: "view[request]" */ `../components/dashboardUserContents/${view}.vue`)
@@ -23,6 +24,9 @@ function loadPegawaiPage(view){
     return () => import(`../components/dashboardPegawaiContents/${view}.vue`)
 }
 
+function loadKasirPage(view){
+  return () => import(`../components/dashboardKasirContents/${view}.vue`)
+}
 // router.beforeEach((to, from, next) => {
 //     if(localStorage.getItem('login') != 'true') next({ name: 'login'})
 //     next
@@ -118,6 +122,19 @@ const routes = [
         }
     ] 
 },
+{
+  path: '/dashboardKasir', 
+  component: DashboardKasirLayout, 
+  meta: {requiresAuth: true},
+  children: [ 
+      { 
+          path: '/dashboardKasir',            
+          name: 'accountKasirController',
+          meta: { requiresKasir: true}, 
+          component: loadKasirPage('accountKasirController') 
+      }
+  ] 
+},
 ]
 
 Vue.use(Router) 
@@ -164,6 +181,19 @@ router.beforeEach((to, from, next) => {
     // if not, redirect to login page.
     if ((localStorage.getItem('role'))!= 'CS' ) {
       next({ path : '/dashboardPegawai' })
+    } else {
+      next()
+    }
+  } else{
+    next() // make sure to always call next()!
+  }
+})
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresCS)) {
+    // this route requires auth, check if logged in
+    // if not, redirect to login page.
+    if ((localStorage.getItem('role'))!= 'KASIR' ) {
+      next({ path : '/dashboardKasir' })
     } else {
       next()
     }

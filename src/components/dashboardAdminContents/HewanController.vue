@@ -12,22 +12,12 @@
                         </v-btn>
                     </v-flex>
                     <v-flex xs6 class="text-right">
-                        <v-text-field 
-                        v-model="search" 
-                        append-icon="mdi-search-web" 
-                        label="Search Tanggal" 
-                        hide-details
-                        text
-                        >
+                        <v-text-field v-model="keyword" append-icon="mdi-search-web" label="Search" hide-details>
                         </v-text-field>
                     </v-flex>
                 </v-layout>
 
-                <v-data-table 
-                :headers="headers" 
-                :items="data_hewans"  
-                :loading="load"
-                :search="search">
+                <v-data-table :headers="headers" :items="data_hewans" :search="keyword" :loading="load">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_hewan">
@@ -60,7 +50,7 @@
                     <v-container>
                         <v-row>
                             <v-col cols="12">
-                                <v-text-field label="Nama Hewan*" v-model="form.nama_hewan" required></v-text-field>
+                                <v-text-field label="Nama Hewan*" v-model="form.nama" required></v-text-field>
                             </v-col>
                             <v-col cols="12">
                                 <v-select :items="nama_ukuran_array" v-model="form.ukuran_hewan" label="Ukuran Hewan" autocomplete></v-select>
@@ -90,31 +80,7 @@
                                 </v-menu>
                             </v-col>
                             <v-col cols="12">
-
                                 <v-select :items="nama_member_array" v-model="form.nama_member" label="Nama Pemilik" autocomplete></v-select>
-                                <!-- <v-autocomplete
-                                    v-model="model"
-                                    :loading="isLoading"
-                                    :search-input.sync="keyword"
-                                    color="black"
-                                    hide-no-data
-                                    hide-selected
-                                    item-text="Description"
-                                    item-value="API"
-                                    label="Public APIs"
-                                    placeholder="Start typing to Search"
-                                    prepend-icon="mdi-database-search"
-                                    return-object
-                                ></v-autocomplete> -->
-
-                                <!-- <v-autocomplete 
-                                label="Pemilik*" 
-                                v-model="form.pemilik" 
-                                required
-                                :suggestions="cities" 
-                                :selection.sync="value"
-                                ></v-autocomplete> -->
-                                <!-- <v-text-field label="Pemilik*" v-model="form.pemilik" required></v-text-field> -->
                             </v-col>
                         </v-row>
                     </v-container>
@@ -140,13 +106,43 @@ import { log } from 'util'
 export default {    
     data () {       
         return {         
-            search: '',
-            show: true,
+            dialog: false,  
+            keyword: '', 
+            headers: [             
+                {               
+                    text: 'No',               
+                    value: 'no',             
+                },            
+                {               
+                    text: 'Nama Hewan',               
+                    value: 'nama',             
+                },             
+                {               
+                    text: 'Ukuran Hewan',               
+                    value: 'ukuran'             
+                },             
+                {               
+                    text: 'Jenis Hewan',               
+                    value: 'jenis'             
+                },
+                {               
+                    text: 'Tanggal Lahir',               
+                    value: 'tgl_lhr'             
+                },
+                {               
+                    text: 'Pemilik',               
+                    value: 'nama_member'             
+                },           
+                {               
+                    text: 'Aksi',
+                    value: null,
+                    sortable: false
+                },         
+            ],         
             rules: {
                 required: value => !!value || 'Required.',
                 min: v => v.length >= 8 || 'Min 8 characters',
             },
-            dialog: false,         
             id_ukuran: '',
             id_jenis: '',
             id_member: '',
@@ -159,37 +155,6 @@ export default {
             //Objek Member
             AllDataMember:[],
             nama_member_array : [],
-            headers: [             
-                {               
-                    text: 'No',               
-                    value: 'no',             
-                },            
-                {               
-                    text: 'Nama Hewan',               
-                    value: 'nama_hewan',             
-                },             
-                {               
-                    text: 'Ukuran Hewan',               
-                    value: 'ukuran_hewan'             
-                },             
-                {               
-                    text: 'Jenis Hewan',               
-                    value: 'jenis_hewan'             
-                },
-                {               
-                    text: 'Tanggal Lahir',               
-                    value: 'tgl_lhr'             
-                },
-                {               
-                    text: 'Pemilik',               
-                    value: 'pemilik'             
-                },           
-                {               
-                    text: 'Aksi',
-                    value: null,
-                    sortable: false
-                },         
-            ],         
             data_hewans: [],         
             AllNamaMember: [],
             snackbar: false,          
@@ -197,8 +162,8 @@ export default {
             text: '',          
             load: false, 
             form: {            
-                pemilik : '',           
-                nama_hewan : '',           
+                nama_member : '',           
+                nama : '',           
                 ukuran_hewan : '',
                 jenis_hewan : '',
                 tgl_lhr : '',
@@ -254,7 +219,7 @@ export default {
         },       
         sendData(){
             var idJenis , idUkuran , idMember;
-            this.data_hewan.append('nama', this.form.nama_hewan);  
+            this.data_hewan.append('nama', this.form.nama);  
             //Ambil id jenis dari membandingkannya dengan inputan
             this.AllJenisHewan.forEach(row => {
                 if(row.jenis === this.form.jenis_hewan){
@@ -305,7 +270,7 @@ export default {
         updateData(){
             console.log("MASUK UPDATE DATA")
             var idJenis , idUkuran , idMember;
-            this.data_hewan.append('nama', this.form.nama_hewan);  
+            this.data_hewan.append('nama', this.form.nama);  
             //Ambil id jenis dari membandingkannya dengan inputan
             this.AllJenisHewan.forEach(row => {
                 if(row.jenis === this.form.jenis_hewan){
@@ -356,7 +321,7 @@ export default {
         editHandler(item){           
             this.typeInput = 'edit';           
             this.dialog = true;           
-            this.form.nama_hewan = item.nama;           
+            this.form.nama = item.nama;           
             this.form.ukuran_hewan = item.ukuran;           
             this.form.jenis_hewan = item.jenis,
             this.form.tgl_lhr = item.tgl_lhr,        
@@ -395,7 +360,7 @@ export default {
         },         
         resetForm(){             
             this.form = {               
-                nama_hewan : '',               
+                nama : '',               
                 ukuran_hewan : '',               
                 jenis_hewan : '',
                 tgl_lhr : '',     

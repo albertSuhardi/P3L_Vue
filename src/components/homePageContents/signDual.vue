@@ -85,6 +85,8 @@ export default {
           this.$router.push({ path: "/dashboardAdmin"});
         }else if(localStorage.getItem('role') == "CS"){
           this.$router.push({ path: "/dashboardPegawai"});
+        }else if(localStorage.getItem('role') == "KASIR"){
+          this.$router.push({ path: "/dashboardKasir"});
         }
       } else {
         localStorage.setItem("masuk", 'false');
@@ -151,6 +153,26 @@ export default {
 
               this.$router.push({
                 path: "/dashboardPegawai"
+              });
+            }else{
+              this.snackbar = true;
+              this.color = 'green';
+              this.text = response.data.message;
+              this.load = false;
+              this.resetForm();
+              console.log(response.data.data);
+              localStorage.setItem("id_pegawai", response.data.data[0].id_pegawai);
+              localStorage.setItem("role", response.data.data[0].role);
+              localStorage.setItem("masuk", 'true');
+              console.log(localStorage.getItem("id_pegawai"));
+
+              
+              // this.$session.set('id_pegawai', response.data.id_pegawai);
+              // console.log(response.data.data);
+              // console.log(this.$session.get('id_pegawai'));
+
+              this.$router.push({
+                path: "/dashboardKasir"
               });
             }
             
