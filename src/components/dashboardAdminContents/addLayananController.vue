@@ -5,6 +5,7 @@
                 <h2 class="text-md-center">Layanan</h2>
                 <v-layout row wrap style="margin:10px">
                     <v-flex xs6>
+                        <v-switch v-model="showable" class="ml-2" label="Show Log"></v-switch>
                         <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
                             @click="dialog = true">
                             <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
@@ -17,16 +18,13 @@
                     </v-flex>
                 </v-layout>
 
-                <v-data-table :headers="headers" :items="services" :search="keyword" :loading="load">
+                <v-data-table :headers="headers" :items="services" :search="keyword" :loading="load" v-if="!showable">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_layanan">
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ item.nama }}</td>
                                 <td>{{ item.harga}}</td>
-                                <td>{{ item.created_at}}</td>
-                                <td>{{ item.update_at}}</td>
-                                <td>{{ item.aktor}}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
@@ -39,6 +37,22 @@
                         </tbody>
                     </template>
                 </v-data-table>
+                <div v-if="showable">
+                    <v-data-table :headers="headers_LOG" :items="servicesLog" :search="keyword" :loading="load">
+                    <template v-slot:body="{ items }">
+                        <tbody>
+                            <tr v-for="(item,index) in items" :key="item.id_layanan">
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ item.nama }}</td>
+                                <td>{{ item.created_at}}</td>
+                                <td>{{ item.update_at}}</td>
+                                <td>{{ item.delete_at}}</td>
+                                <td>{{ item.aktor }}</td>
+                            </tr>
+                        </tbody>
+                    </template>
+                </v-data-table>
+                </div>
             </v-container>
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="600px">
@@ -78,7 +92,8 @@
 import { log } from 'util'
 export default {    
     data () {       
-        return {         
+        return {      
+            showable: false,   
             dialog: false,         
             keyword: '',         
             headers: [             
@@ -95,24 +110,39 @@ export default {
                     value: 'harga'             
                 },
                 {               
-                    text: 'Dibuat Tanggal',               
-                    value: 'created_at'             
-                },
-                {               
-                    text: 'Diupdate Tanggal',               
-                    value: 'update_at'             
-                },
-                {               
-                    text: 'Aktor',               
-                    value: 'aktor'             
-                },             
-                {               
                     text: 'Aksi',
                     value: null,
                     sortable: false
                 },         
             ],         
+            headers_Log: [             
+                {               
+                    text: 'No',               
+                    value: 'no',             
+                },  
+                {               
+                    text: 'Layanan',               
+                    value: 'nama'             
+                },                        
+                {               
+                    text: 'Dibuat Tanggal',               
+                    value: 'created_at'             
+                },             
+                {               
+                    text: 'Diubah tanggal',               
+                    value: 'update_at'             
+                },
+                {               
+                    text: 'Dihapus tanggal',               
+                    value: 'delete_at'             
+                },
+                {               
+                    text: 'Aktor',
+                    value: 'aktor'
+                },         
+            ],         
             services: [],         
+            servicesLog: [],         
             snackbar: false,          
             color: null,         
             text: '',          
@@ -133,7 +163,13 @@ export default {
             this.$http.get(uri).then(response =>{                 
                 this.services=response.data.data             
             })               
-        },         
+        },  
+        getDataLog(){             
+            var uri = this.$apiUrl + '/layanan/log'             
+            this.$http.get(uri).then(response =>{                 
+                this.servicesLog=response.data.data             
+            })               
+        },                
         sendData(){
             this.service.append('nama', this.form.nama);      
             this.service.append('harga', this.form.harga);       
@@ -228,6 +264,7 @@ export default {
     },     
     mounted(){         
         this.getData();     
+        this.getDataLog()
         }, 
     } 
 </script> 

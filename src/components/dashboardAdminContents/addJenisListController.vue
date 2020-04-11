@@ -5,6 +5,7 @@
                 <h2 class="text-md-center">List Jenis</h2>
                 <v-layout row wrap style="margin:10px">
                     <v-flex xs6>
+                        <v-switch v-model="showable" class="ml-2" label="Show Log"></v-switch>
                         <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
                             @click="dialog = true">
                             <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
@@ -17,15 +18,13 @@
                     </v-flex>
                 </v-layout>
 
-                <v-data-table :headers="headers" :items="types" :search="keyword" :loading="load">
+                <v-data-table :headers="headers" :items="types" :search="keyword" :loading="load" v-if="!showable">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_jenis">
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ item.jenis }}</td>
                                 <td>{{ item.harga}}</td>
-                                <td>{{ item.created_at}}</td>
-                                <td>{{ item.update_at}}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
@@ -38,6 +37,22 @@
                         </tbody>
                     </template>
                 </v-data-table>
+                <div v-if="showable">
+                    <v-data-table :headers="headers_LOG" :items="typesLog" :search="keyword" :loading="load">
+                    <template v-slot:body="{ items }">
+                        <tbody>
+                            <tr v-for="(item,index) in items" :key="item.id_jenis">
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ item.jenis }}</td>
+                                <td>{{ item.created_at}}</td>
+                                <td>{{ item.update_at}}</td>
+                                <td>{{ item.delete_at}}</td>
+                                <td>{{ item.aktor }}</td>
+                            </tr>
+                        </tbody>
+                    </template>
+                </v-data-table>
+                </div>
             </v-container>
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="600px">
@@ -78,7 +93,8 @@ import { log } from 'util'
 export default {    
     data () {       
         return {         
-            dialog: false,         
+            dialog: false,
+            showable: false,         
             keyword: '',         
             headers: [             
                 {               
@@ -92,22 +108,42 @@ export default {
                 {               
                     text: 'Harga',               
                     value: 'harga'             
-                },  
-                {               
-                    text: 'Dibuat Tanggal',               
-                    value: 'created_at'             
-                },
-                {               
-                    text: 'Diupdate Tanggal',               
-                    value: 'update_at'             
                 },             
                 {               
                     text: 'Aksi',
                     value: null,
                     sortable: false
                 },         
+            ],  
+            headers_LOG: [             
+                {               
+                    text: 'No',               
+                    value: 'no',             
+                },             
+                {               
+                    text: 'Type',               
+                    value: 'jenis'             
+                },             
+                {               
+                    text: 'Created_at',               
+                    value: 'created_at'             
+                },             
+                {               
+                    text: 'Updated_at',               
+                    value: 'update_at'             
+                },             
+                {               
+                    text: 'Deleted_at',               
+                    value: 'delete_at'             
+                },             
+                {               
+                    text: 'Aktor',               
+                    value: 'aktor'             
+                },             
+                        
             ],         
             types: [],         
+            typesLog: [], 
             snackbar: false,          
             color: null,         
             text: '',          
@@ -128,14 +164,20 @@ export default {
             this.$http.get(uri).then(response =>{                 
                 this.types=response.data.data             
             })               
+        },
+        getDataLog(){             
+            var uri = this.$apiUrl + '/jenis_hewan/log'             
+            this.$http.get(uri).then(response =>{                 
+                this.typesLog=response.data.data             
+            })               
         },         
         sendData(){
             this.type.append('jenis', this.form.jenis);      
             this.type.append('harga', this.form.harga);       
-            this.type.append('id_jenis', 1);
+            this.type.append('aktor', localStorage.getItem('id_pegawai'));
             var uri =this.$apiUrl + '/jenis_hewan'             
             this.load = true             
-            this.$http.post(uri,this.jenis).then(response =>{               
+            this.$http.post(uri,this.type).then(response =>{               
                 this.snackbar = true; //mengaktifkan snackbar               
                 this.color = 'green'; //memberi warna snackbar               
                 this.text = response.data.message; //memasukkan pesan ke snackbar               
@@ -156,7 +198,8 @@ export default {
             requestBody = {
                 id_jenis : this.updatedId,
                 jenis : this.form.jenis,
-                harga : this.form.harga
+                harga : this.form.harga,
+                aktor : localStorage.getItem('id_pegawai')
             }
             uri = this.$apiUrl + '/jenis_hewan/' + this.updatedId;             
             this.load = true             
@@ -187,7 +230,8 @@ export default {
             console.log(item.id_jenis)
         },
         
-        deleteData(deleteId) { //mengahapus data             
+        deleteData(deleteId) { //mengahapus data  
+            this.type.append('aktor', localStorage.getItem('id_pegawai'));           
             this.type.append('id_jenis', deleteId);
             var uri = this.$apiUrl + '/jenis_hewan/delete'; //data dihapus berdasarkan id_ukuran
             this.$http.post(uri, this.type).then(response =>{ 
@@ -220,7 +264,8 @@ export default {
     },     
     mounted(){         
         this.getData();     
-        }, 
+        this.getDataLog();
+        } 
     } 
 </script> 
 <style lang="scss" scoped>

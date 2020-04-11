@@ -5,6 +5,7 @@
                 <h2 class="text-md-center">Member Kouvee</h2>
                 <v-layout row wrap style="margin:10px">
                     <v-flex xs6>
+                        <v-switch v-model="showable" class="ml-2" label="Show Log"></v-switch>
                         <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
                             @click="dialog = true">
                             <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
@@ -27,9 +28,6 @@
                                 <td>{{ item.tgl_lhr }}</td>
                                 <td>{{ item.no_telp }}</td>
                                 <td>{{ item.status }}</td>
-                                <td>{{ item.created_at}}</td>
-                                <td>{{ item.update_at}}</td>
-                                <td>{{ item.aktor}}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
@@ -42,6 +40,22 @@
                         </tbody>
                     </template>
                 </v-data-table>
+                <div v-if="showable">
+                    <v-data-table :headers="headers_LOG" :items="membersLog" :search="keyword" :loading="load">
+                    <template v-slot:body="{ items }">
+                        <tbody>
+                            <tr v-for="(item,index) in items" :key="item.id_member">
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ item.nama }}</td>
+                                <td>{{ item.created_at}}</td>
+                                <td>{{ item.update_at}}</td>
+                                <td>{{ item.delete_at}}</td>
+                                <td>{{ item.aktor }}</td>
+                            </tr>
+                        </tbody>
+                    </template>
+                </v-data-table>
+                </div>
             </v-container>
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="600px">
@@ -138,6 +152,21 @@ export default {
                 {               
                     text: 'Status',               
                     value: 'status'             
+                },                
+                {               
+                    text: 'Aksi',
+                    value: null,
+                    sortable: false
+                },         
+            ],         
+            headers_Log: [             
+                {               
+                    text: 'No',               
+                    value: 'no',             
+                },             
+                {               
+                    text: 'Nama',               
+                    value: 'nama'             
                 },       
                 {               
                     text: 'Dibuat Tanggal',               
@@ -147,17 +176,18 @@ export default {
                     text: 'Diupdate Tanggal',               
                     value: 'update_at'             
                 },
+                
+                {               
+                    text: 'Dihapus Tanggal',               
+                    value: 'delete_at'             
+                },
                 {               
                     text: 'Aktor',               
                     value: 'aktor'             
-                },                
-                {               
-                    text: 'Aksi',
-                    value: null,
-                    sortable: false
                 },         
             ],         
             members: [],         
+            membersLog: [],         
             snackbar: false,          
             color: null,         
             text: '',          
@@ -181,7 +211,13 @@ export default {
             this.$http.get(uri).then(response =>{                 
                 this.members=response.data.data             
             })               
-        },         
+        },
+        getDataLog(){             
+            var uri = this.$apiUrl + '/member/log'             
+            this.$http.get(uri).then(response =>{                 
+                this.membersLog=response.data.data             
+            })               
+        },           
         sendData(){
             this.member.append('nama', this.form.nama);      
             this.member.append('alamat', this.form.alamat);       
@@ -287,7 +323,8 @@ export default {
         }     
     },     
     mounted(){         
-        this.getData();     
+        this.getData(); 
+        this.getDataLog();
         }, 
     } 
 </script> 

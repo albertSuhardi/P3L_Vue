@@ -5,6 +5,7 @@
                 <h2 class="text-md-center">Data Hewan</h2>
                 <v-layout row wrap style="margin:10px">
                     <v-flex xs6>
+                        <v-switch v-model="showable" class="ml-2" label="Show Log"></v-switch>
                         <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
                             @click="dialog = true" >
                             <v-icon size="18" class="mr-2" >mdi-pencil-plus</v-icon>
@@ -17,7 +18,7 @@
                     </v-flex>
                 </v-layout>
 
-                <v-data-table :headers="headers" :items="data_hewans" :search="keyword" :loading="load">
+                <v-data-table :headers="headers" :items="data_hewans" :search="keyword" :loading="load" v-if="!showable">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_hewan">
@@ -27,9 +28,6 @@
                                 <td>{{ item.jenis }}</td>
                                 <td>{{ item.tgl_lhr }}</td>
                                 <td>{{ item.nama_member }}</td>
-                                <td>{{ item.created_at }}</td>
-                                <td>{{ item.update_at }}</td>
-                                <td>{{ item.aktor }}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" dark @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
@@ -42,6 +40,22 @@
                         </tbody>
                     </template>
                 </v-data-table>
+                <div v-if="showable">
+                    <v-data-table :headers="headers_LOG" :items="data_hewanLog" :search="keyword" :loading="load">
+                    <template v-slot:body="{ items }">
+                        <tbody>
+                            <tr v-for="(item,index) in items" :key="item.id_hewan">
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ item.nama }}</td>
+                                <td>{{ item.created_at}}</td>
+                                <td>{{ item.update_at}}</td>
+                                <td>{{ item.delete_at}}</td>
+                                <td>{{ item.aktor }}</td>
+                            </tr>
+                        </tbody>
+                    </template>
+                </v-data-table>
+                </div>
             </v-container>
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="600px">
@@ -108,7 +122,8 @@
 import { log } from 'util'
 export default {    
     data () {       
-        return {         
+        return { 
+            showable: false,        
             dialog: false,  
             keyword: '', 
             headers: [             
@@ -137,6 +152,21 @@ export default {
                     value: 'nama_member'             
                 },
                 {               
+                    text: 'Aksi',
+                    value: null,
+                    sortable: false
+                },         
+            ], 
+            headers_LOG: [             
+                {               
+                    text: 'No',               
+                    value: 'no',             
+                },            
+                {               
+                    text: 'Nama Hewan',               
+                    value: 'nama',             
+                },             
+                {               
                     text: 'Dibuat Tanggal',               
                     value: 'created_at'             
                 },
@@ -145,15 +175,14 @@ export default {
                     value: 'update_at'             
                 },
                 {               
+                    text: 'Dihapus Tanggal',               
+                    value: 'delete_at'             
+                },
+                {               
                     text: 'Aktor',               
                     value: 'aktor'             
-                },           
-                {               
-                    text: 'Aksi',
-                    value: null,
-                    sortable: false
-                },         
-            ],         
+                }       
+            ],        
             rules: {
                 required: value => !!value || 'Required.',
                 min: v => v.length >= 8 || 'Min 8 characters',
@@ -170,7 +199,8 @@ export default {
             //Objek Member
             AllDataMember:[],
             nama_member_array : [],
-            data_hewans: [],         
+            data_hewans: [],
+            data_hewanLog: [],           
             AllNamaMember: [],
             snackbar: false,          
             color: null,         
@@ -198,7 +228,14 @@ export default {
                 this.data_hewans = temp
             })               
             
-        },   
+        }, 
+        getDataLog(){             
+            var uri = this.$apiUrl + '/data_hewan/log'             
+            this.$http.get(uri).then(response =>{                 
+                var temp =response.data.data 
+                this.data_hewanLog = temp
+            })               
+        },         
         getDataJenis(){             
             var temp;
             var uri = this.$apiUrl + '/jenis_hewan'             
@@ -350,8 +387,6 @@ export default {
         deleteData(deleteId) { //mengahapus data             
             this.data_hewan.append('id_hewan', deleteId);
             this.data_hewan.append('aktor', 5);
-            console.log("Ini ID yg mau di delete : " + deleteId)
-            console.log("Ini ID yg nge delete : " + 5)
             var uri = this.$apiUrl + '/data_hewan/delete'; //data dihapus berdasarkan id_ukuran
             this.$http.post(uri, this.data_hewan).then(response =>{ 
                 this.snackbar = true;                 
@@ -395,6 +430,7 @@ export default {
     },     
     mounted(){         
         this.getData();
+        this.getDataLog();
         this.getDataJenis();
         this.getDataUkuran();
         this.getDataMember();

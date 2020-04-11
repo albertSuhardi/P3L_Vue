@@ -153,33 +153,6 @@ export default {
                 this.products=response.data.data             
             })               
         },  
-        sendData(){             
-            this.product.append('nama', this.form.nama);             
-            this.product.append('unit', this.form.unit);             
-            this.product.append('stok', this.form.stok);
-            this.product.append('min_stok', this.form.min_stok);  
-            this.product.append('harga', this.form.harga);  
-            this.product.append('foto', this.form.foto);  
-            var uri =this.$apiUrl + '/produk'             
-            this.load = true             
-            this.$http.post(uri, this.product).then(response =>{               
-                this.snackbar = true; //mengaktifkan snackbar               
-                this.color = 'green'; //memberi warna snackbar               
-                this.text = response.data.message; //memasukkan pesan ke snackbar               
-                this.load = false;               
-                this.dialog = false               
-                this.getData(); //mengambil data user               
-                this.resetForm();
-                //this.uploadFoto();
-            }).catch(error =>{               
-                this.errors = error               
-                this.snackbar = true;               
-                this.text = 'Try Again';               
-                this.color = 'red';               
-                this.load = false;           
-            })         
-        },
-
         updateData(){             
             var uri, requestBody
             requestBody = {
@@ -188,7 +161,8 @@ export default {
                 unit : this.form.unit,
                 stok : this.form.stok,
                 min_stok : this.form.min_stok,
-                harga : this.form.harga
+                harga : this.form.harga,
+                aktor : localStorage.getItem('id_pegawai')
             }            
             uri = this.$apiUrl + '/produk/' + this.updatedId;             
               
@@ -227,6 +201,7 @@ export default {
         
         deleteData(deleteId) { //mengahapus data             
             this.product.append('id_produk', deleteId);
+            this.product.append('aktor', localStorage.getItem('id_pegawai'));
             var uri = this.$apiUrl + '/produk/delete'; //data dihapus berdasarkan id_ukuran
             this.$http.post(uri, this.product).then(response =>{ 
                 this.snackbar = true;                 

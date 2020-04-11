@@ -5,6 +5,7 @@
                 <h2 class="text-md-center">Kolom Pegawai</h2>
                 <v-layout row wrap style="margin:10px">
                     <v-flex xs6>
+                        <v-switch v-model="showable" class="ml-2" label="Show Log"></v-switch>
                         <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
                             @click="dialog = true">
                             <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
@@ -17,7 +18,7 @@
                     </v-flex>
                 </v-layout>
 
-                <v-data-table :headers="headers" :items="employees" :search="keyword" :loading="load">
+                <v-data-table :headers="headers" :items="employees" :search="keyword" :loading="load" v-if="!showable">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_pegawai">
@@ -28,8 +29,6 @@
                                 <td>{{ item.no_telp }}</td>
                                 <td>{{ item.role }}</td>
                                 <td>{{ item.username }}</td>
-                                <td>{{ item.created_at}}</td>
-                                <td>{{ item.update_at}}</td>
                                 <td class="text-center">
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
@@ -42,12 +41,28 @@
                         </tbody>
                     </template>
                 </v-data-table>
+                <div v-if="showable">
+                    <v-data-table :headers="headers_LOG" :items="employeesLog" :search="keyword" :loading="load">
+                    <template v-slot:body="{ items }">
+                        <tbody>
+                            <tr v-for="(item,index) in items" :key="item.id_pegawai">
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ item.nama }}</td>
+                                <td>{{ item.created_at }}</td>
+                                <td>{{ item.update_at}}</td>
+                                <td>{{ item.delete_at }}</td>
+                                <td>{{ "OWNER" }}</td>
+                            </tr>
+                        </tbody>
+                    </template>
+                </v-data-table>
+                </div>
             </v-container>
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
                 <v-card-title>
-                    <span class="headline">Pegawai</span>
+                    <span class="headline" >Pegawai</span>
                 </v-card-title>
                 <v-card-text>
                     <v-container>
@@ -130,6 +145,7 @@ export default {
     data () {       
         return {         
             show: true,
+            showable: false,
             password: 'Password',
             rules: {
                 required: value => !!value || 'Required.',
@@ -165,22 +181,41 @@ export default {
                 {               
                     text: 'Username',               
                     value: 'username'             
-                },
-                {               
-                    text: 'Dibuat Tanggal',               
-                    value: 'created_at'             
-                },
-                {               
-                    text: 'Diupdate Tanggal',               
-                    value: 'update_at'             
                 },        
                 {               
                     text: 'Aksi',
                     value: null,
                     sortable: false
                 },         
+            ],
+            headers_LOG: [             
+                {               
+                    text: 'No',               
+                    value: 'no',             
+                },             
+                {               
+                    text: 'Nama',               
+                    value: 'nama'             
+                },
+                {               
+                    text: 'Dibuat Tanggal',               
+                    value: 'cretaed_at'             
+                },
+                {               
+                    text: 'Diubah Tanggal',               
+                    value: 'update_at'             
+                },
+                {               
+                    text: 'Dihapus Tanggal',               
+                    value: 'delete_at'             
+                },
+                {               
+                    text: 'Aktor',               
+                    value: 'OWNER'             
+                }             
             ],         
-            employees: [],         
+            employees: [],
+            employeesLog: [],         
             snackbar: false,          
             color: null,         
             text: '',          
@@ -205,6 +240,12 @@ export default {
             this.$http.get(uri).then(response =>{                 
                 this.employees=response.data.data             
             })               
+        },
+        getDataLog(){             
+            var uri = this.$apiUrl + '/pegawai/log'             
+            this.$http.get(uri).then(response =>{                 
+                this.employeesLog=response.data.data             
+            })               
         },         
         sendData(){
             this.employee.append('nama', this.form.nama);      
@@ -214,6 +255,7 @@ export default {
             this.employee.append('username', this.form.username);
             this.employee.append('password', this.form.password);
             this.employee.append('role', this.form.role);
+            this.employee.append('aktor', localStorage.getItem('id_pegawai'));
             this.employee.append('id_pegawai', 1);
             var uri =this.$apiUrl + '/pegawai'             
             this.load = true             
@@ -243,7 +285,8 @@ export default {
                 no_telp : this.form.no_telp,
                 username : this.form.username,
                 password : this.form.password,
-                role : this.form.role
+                role : this.form.role,
+                aktor : localStorage.getItem('id_pegawai')
             }            
             uri = this.$apiUrl + '/pegawai/' + this.updatedId;             
             this.load = true             
@@ -281,6 +324,7 @@ export default {
         
         deleteData(deleteId) { //mengahapus data             
             this.employee.append('id_pegawai', deleteId);
+            this.employee.append('aktor', localStorage.getItem('id_pegawai'));
             var uri = this.$apiUrl + '/pegawai/delete'; //data dihapus berdasarkan id_ukuran
             this.$http.post(uri, this.employee).then(response =>{ 
                 this.snackbar = true;                 
@@ -317,7 +361,8 @@ export default {
     },     
     mounted(){         
         this.getData();     
-        }, 
+        this.getDataLog();
+        } 
     } 
 </script> 
 <style lang="scss" scoped>
