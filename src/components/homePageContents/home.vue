@@ -3,7 +3,7 @@
 <v-container fluid>
    <v-carousel
    cycle
-    height="400"
+    height="600"
     hide-delimiter-background
     show-arrows-on-hover>
     <v-carousel-item
@@ -16,9 +16,9 @@
     </v-carousel-item>
   </v-carousel>
   <v-card>
-    <v-card-text id="Header-Info">About Us</v-card-text>
+    <v-card-text id="Header-Info">Tentang Kami</v-card-text>
     <v-card-text align="justify">
-      A library is a curated collection of sources of information and similar resources, selected by experts and made accessible to a defined community for reference or borrowing. It provides physical or digital access to material, and maybe a physical location or a virtual space, or both. A library's collection can include books, periodicals, newspapers, manuscripts, films, maps, prints, documents, microform, CDs, cassettes, videotapes, DVDs, Blu-ray Discs, e-books, audiobooks, databases, and other formats. Libraries range widely in size up to millions of items. In Latin and Greek, the idea of a bookcase is represented by Bibliotheca and Bibliothēkē (Greek: βιβλιοθήκη): derivatives of these mean library in many modern languages, e.g. French bibliothèque. The first libraries consisted of archives of the earliest form of writing—the clay tablets in cuneiform script discovered in Sumer, some dating back to 2600 BC. Private or personal libraries made up of written books appeared in classical Greece in the 5th century BC. In the 6th century, at the very close of the Classical period, the great libraries of the Mediterranean world remained those of Constantinople and Alexandria. A library is organized for use and maintained by a public body, an institution, a corporation, or a private individual. Public and institutional collections and services may be intended for use by people who choose not to—or cannot afford to—purchase an extensive collection themselves, who need material no individual can reasonably be expected to have, or who require professional assistance withtheir research. In addition to providing materials, libraries also provide the services of librarians who are experts at finding and organizing information and at interpreting information needs. Libraries often provide quiet areas for studying, and they also often offer common areas to facilitate group study and collaboration. Libraries often provide public facilities for access to their electronic resources and the Internet. 
+      Kouvee Pet Shop merupakan sebuah toko hewan yang sudah berdiri sejak tahun 2018 menyediakan produk dan jasa layanan yang berada di Kota Yogyakarta. Kouvee Pet Shop menyediakan berbagai macam produk untuk hewan kesayangan anda seperti makanan, aksesoris, perlengkapan dan lain-lain sesuai kebutuhan hewan kesayangan anda. Selain menjual berbagai macam produk, Kouvee Pet Shop juga menyediakan jasa layanan seperti grooming dan penitipan hewan. Kouvee Pet Shop bekerja sama dengan beberapa supplier dalam penyediaan produk yang dijual.
     </v-card-text>
     <v-card-text align="right">
       by : P3L
@@ -34,16 +34,18 @@
       return {
         items: [
           {
-            src: 'https://image.slidesharecdn.com/pets-delight-161213010820/95/a-complete-and-reliable-pet-shop-in-the-uae-1-638.jpg?cb=1481591639',
+            src: 'https://moondoggiesmusic.com/wp-content/uploads/2019/03/jenis-hewan-peliharaan.png',
+            
           },
           {
-            src: 'https://i1.wp.com/www.saferkidsandhomes.com/wp-content/uploads/2016/10/cara-merawat-hewan-peliharaan-memandikan-kucing-1.jpg?fit=750%2C436&ssl=1',
+            src: 'https://cdn.royalcanin-weshare-online.io/xSJNPmYBaxEApS7LvAZG/v11/ed36h-grooming-and-hygiene-tips-for-your-new-puppy-hero-dog',
+            
           },
           {
-            src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
+            src: 'https://pingpoint.co.id/media/images/BINTARO_BISNIS_TIPS_SUKSES_USAHA_PET_SHOP_OCI_1.original.jpg',
           },
           {
-            src: 'https://img.okeinfo.net/content/2018/03/22/65/1876436/5-pilihan-pekerjaan-untuk-si-pencinta-hewan-40q85vEduu.jpg',
+            src: 'https://www.fachton.com/wp-content/uploads/2019/07/fachton-obat-kutu-kucing.jpg',
           },
         ],
         colors: [

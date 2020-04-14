@@ -41,7 +41,7 @@
                     </template>
                 </v-data-table>
                 <div v-if="showable">
-                    <v-data-table :headers="headers_LOG" :items="data_hewanLog" :search="keyword" :loading="load">
+                    <v-data-table :headers="headers_LOG" :items="data_hewansLog" :search="keyword" :loading="load">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_hewan">
@@ -76,7 +76,9 @@
                                 <v-select :items="nama_jenis_array" v-model="form.jenis_hewan" label="Jenis Hewan" autocomplete></v-select>
                             </v-col>
                             <v-col cols="12">
-                                <!-- <v-date-picker v-text-field v-model="date" prepend-icon="event" v-on="on" label="Tgl lahir*" required></v-date-picker> -->
+                                <v-select :items="nama_member_array" v-model="form.nama_member_hewan" label="Nama Pemilik" autocomplete></v-select>
+                            </v-col>
+                            <v-col cols="12">
                                 <v-menu
                                     :close-on-content-click="false"
                                     :nudge-right="40"
@@ -96,16 +98,13 @@
                                     <v-date-picker v-model="form.tgl_lhr" @input="menu2 = false" required></v-date-picker>
                                 </v-menu>
                             </v-col>
-                            <v-col cols="12">
-                                <v-select :items="nama_member_array" v-model="form.nama_member" label="Nama Pemilik" autocomplete></v-select>
-                            </v-col>
                         </v-row>
                     </v-container>
                     <small>*indicates required field</small>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text  @click="resetForm()">Close</v-btn>
+                    <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
                     <v-btn color="blue darken-1" text @click="setForm()">Save</v-btn>
                 </v-card-actions>
             </v-card>
@@ -191,26 +190,25 @@ export default {
             id_jenis: '',
             id_member: '',
             //Objek Jenis
-            AllJenisHewan: [],
+            AllJenisHewan : [],
             nama_jenis_array : [],
             //Objek Ukuran
-            AllUkuranHewan:[],
+            AllUkuranHewan : [],
             nama_ukuran_array : [],
             //Objek Member
-            AllDataMember:[],
+            AllDataMember : [],
             nama_member_array : [],
             data_hewans: [],
-            data_hewanLog: [],           
-            AllNamaMember: [],
+            data_hewansLog: [],
             snackbar: false,          
             color: null,         
             text: '',          
             load: false, 
-            form: {            
-                nama_member : '',           
+            form: {                       
                 nama : '',           
                 ukuran_hewan : '',
                 jenis_hewan : '',
+                nama_member_hewan : '',
                 tgl_lhr : '',
             },         
             data_hewan : new FormData,         
@@ -221,61 +219,48 @@ export default {
     },     
     methods:{         
         getData(){           
-            var idJenis, idUkuran;
+            //var idJenis, idUkuran, idMember;
             var uri = this.$apiUrl + '/data_hewan'             
             this.$http.get(uri).then(response =>{                 
-                var temp =response.data.data 
-                this.data_hewans = temp
+                this.data_hewans =response.data.data 
             })               
             
         }, 
         getDataLog(){             
             var uri = this.$apiUrl + '/data_hewan/log'             
             this.$http.get(uri).then(response =>{                 
-                var temp =response.data.data 
-                this.data_hewanLog = temp
+                this.data_hewansLog =response.data.data 
             })               
         },         
         getDataJenis(){             
-            var temp;
             var uri = this.$apiUrl + '/jenis_hewan'             
             this.$http.get(uri).then(response =>{                 
-                temp = response.data.data             
-                this.AllJenisHewan = temp
-                temp.forEach(row =>{
-                    this.nama_jenis_array.push(row.jenis)
-                });
+                this.AllJenisHewan = response.data.data             
+                this.AllJenisHewan.forEach(row =>{ this.nama_jenis_array.push(row.jenis) });
             })               
         },
-        getDataUkuran(){             
-            var temp;
+        getDataUkuran(){            
             var uri = this.$apiUrl + '/ukuran_hewan'             
             this.$http.get(uri).then(response =>{                 
-                temp = response.data.data             
-                this.AllUkuranHewan = temp
-                temp.forEach(row => {
-                    this.nama_ukuran_array.push(row.ukuran)
-                });
+                this.AllUkuranHewan = response.data.data             
+                this.AllUkuranHewan.forEach(row => { this.nama_ukuran_array.push(row.ukuran) });
             })               
         },
         getDataMember(){             
-            var temp;
             var uri = this.$apiUrl + '/member'             
             this.$http.get(uri).then(response =>{                 
-                temp =response.data.data             
-                this.AllDataMember = temp
-                temp.forEach(row => {
-                    this.nama_member_array.push(row.nama)
-                });
+                this.AllDataMember = response.data.data             
+                this.AllDataMember.forEach(row => { this.nama_member_array.push(row.nama) });
             })               
         },       
         sendData(){
             var idJenis , idUkuran , idMember;
+            
             this.data_hewan.append('nama', this.form.nama);  
             //Ambil id jenis dari membandingkannya dengan inputan
             this.AllJenisHewan.forEach(row => {
                 if(row.jenis === this.form.jenis_hewan){
-                    idJenis = row.id_jenis
+                    idJenis = row.id_jenis;
                 }
             })
             console.log("Ini ID JENIS : " +idJenis)    
@@ -283,19 +268,20 @@ export default {
             //Ambil id Ukuran
             this.AllUkuranHewan.forEach(row => {
                 if(row.ukuran === this.form.ukuran_hewan){
-                    idUkuran = row.id_ukuran
+                    idUkuran = row.id_ukuran;
                 }
             })
             console.log("Ini Id Ukuran : " + idUkuran)    
             this.data_hewan.append('id_ukuran', idUkuran);
             //Ambil id member
             this.AllDataMember.forEach(row => {
-                if(row.nama === this.form.nama_member){
-                    idMember = row.id_member
+                if(row.nama == this.form.nama_member_hewan){
+                    idMember = row.id_member;
                 }
             })
             console.log("Ini Id member : " + idMember)           
             this.data_hewan.append('id_member', idMember);
+
             this.data_hewan.append('id_pegawai_cs', 5);
             this.data_hewan.append('id_pegawai_kasir', 5);
             this.data_hewan.append('aktor', 5);
@@ -303,16 +289,16 @@ export default {
             this.data_hewan.append('id_hewan', 1);
             var uri =this.$apiUrl + '/data_hewan'             
             this.load = true             
-            this.$http.post(uri,this.data_hewan).then(response =>{               
+            this.$http.post(uri, this.data_hewan).then(response =>{               
                 this.snackbar = true; //mengaktifkan snackbar               
                 this.color = 'green'; //memberi warna snackbar               
                 this.text = response.data.message; //memasukkan pesan ke snackbar               
                 this.load = false;               
                 this.dialog = false               
-                this.getData(); //mengambil data pegawai               
+                this.getData(); //mengambil data supplier         
                 this.resetForm();           
             }).catch(error =>{               
-                this.errors = error               
+                this.errors = error;               
                 this.snackbar = true;               
                 this.text = 'Try Again';               
                 this.color = 'red';               
@@ -341,7 +327,7 @@ export default {
             this.data_hewan.append('id_ukuran', idUkuran);
             //Ambil id member
             this.AllDataMember.forEach(row => {
-                if(row.nama === this.form.nama_member){
+                if(row.nama === this.form.nama_member_hewan){
                     idMember = row.id_member
                 }
             })
@@ -349,8 +335,8 @@ export default {
             this.data_hewan.append('id_member', idMember);
             this.data_hewan.append('id_pegawai_cs', 5);
             this.data_hewan.append('id_pegawai_kasir', 5);
-            this.data_hewan.append('aktor', 5);
             this.data_hewan.append('tgl_lhr', this.form.tgl_lhr);
+            this.data_hewan.append('aktor', localStorage.getItem('id_pegawai'));
             this.data_hewan.append('id_hewan', this.UpdatedID);
             var uri =this.$apiUrl + '/data_hewan/edit'             
             this.load = true             
@@ -378,10 +364,12 @@ export default {
             this.form.ukuran_hewan = item.ukuran;           
             this.form.jenis_hewan = item.jenis,
             this.form.tgl_lhr = item.tgl_lhr,        
-            this.form.nama_member = item.nama_member,             
+            this.form.nama_member_hewan = item.nama_member,             
             this.UpdatedID = item.id_hewan
             console.log("Ini id hewan yang terpilih : " + item.id_hewan);
+            console.log("Ini nama hewan yang terpilih : " + this.form.nama_member_hewan);
             console.log("UPDATED ID : " + this.UpdatedID);
+            
         },
         
         deleteData(deleteId) { //mengahapus data             
@@ -391,7 +379,7 @@ export default {
             this.$http.post(uri, this.data_hewan).then(response =>{ 
                 this.snackbar = true;                 
                 this.text = response.data.message;                 
-                this.color = 'green'                 
+                this.color = 'green';                 
                 this.deleteDialog = false;                 
                 this.getData();             
             }).catch(error =>{                 
@@ -414,11 +402,9 @@ export default {
                 nama : '',               
                 ukuran_hewan : '',               
                 jenis_hewan : '',
-                tgl_lhr : '',     
-                nama_member : ''
-            }
-            this.dialog = false
-            this.typeInput = 'new'         
+                nama_member_hewan : '',
+                tgl_lhr : ''     
+            }       
         }     
     },
      computed: {

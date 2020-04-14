@@ -192,11 +192,11 @@ export default {
                 this.color = 'green'; //memberi warna snackbar               
                 this.text = response.data.message; //memasukkan pesan ke snackbar               
                 this.load = false;               
-                this.dialog = false               
+                this.dialog = false;               
                 this.getData(); //mengambil data supplier         
                 this.resetForm();           
             }).catch(error =>{               
-                this.errors = error               
+                this.errors = error;               
                 this.snackbar = true;               
                 this.text = 'Try Again';               
                 this.color = 'red';               

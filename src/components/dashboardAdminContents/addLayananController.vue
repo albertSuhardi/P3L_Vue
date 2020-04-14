@@ -115,7 +115,7 @@ export default {
                     sortable: false
                 },         
             ],         
-            headers_Log: [             
+            headers_LOG: [             
                 {               
                     text: 'No',               
                     value: 'no',             
