@@ -125,6 +125,48 @@ const routes = [
           name: 'addProdukCSController',
           meta: { requiresCS: true}, 
           component: loadPegawaiPage('addProdukCSController') 
+        },
+        { 
+          path: '/dashboardPegawai/addLayananCS',            
+          name: 'addLayananCSController',
+          meta: { requiresCS: true}, 
+          component: loadPegawaiPage('addLayananCSController') 
+        },
+        { 
+          path: '/dashboardPegawai/addHewanCS',            
+          name: 'addDataHewanCSController',
+          meta: { requiresCS: true}, 
+          component: loadPegawaiPage('addDataHewanCSController') 
+        },
+        { 
+          path: '/dashboardPegawai/addMemberCS',            
+          name: 'addMemberCSController',
+          meta: { requiresCS: true}, 
+          component: loadPegawaiPage('addMemberCSController') 
+        },
+        { 
+          path: '/dashboardPegawai/JualProdukCS',            
+          name: 'addPenjualanProdukController',
+          meta: { requiresCS: true}, 
+          component: loadPegawaiPage('addPenjualanProdukController') 
+        },
+        { 
+          path: '/dashboardPegawai/TransaksiCS',            
+          name: 'addDetailPenjualanCSController',
+          meta: { requiresCS: true}, 
+          component: loadPegawaiPage('addDetailPenjualanCSController') 
+        },
+        { 
+          path: '/dashboardPegawai/LayananCS',            
+          name: 'addPenjualanLayanan',
+          meta: { requiresCS: true}, 
+          component: loadPegawaiPage('addPenjualanLayanan') 
+        },
+        { 
+          path: '/dashboardPegawai/ServiceCS',            
+          name: 'addTransaksiPenjualanCSController',
+          meta: { requiresCS: true},
+          component: loadPegawaiPage('addTransaksiPenjualanCSController') 
         }
     ] 
 },

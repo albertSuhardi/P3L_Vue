@@ -49,6 +49,11 @@
         items: [
             { title: 'Profile', icon: 'mdi-account-heart', name: 'addAccountController'},
             { title: 'Produk', icon: 'mdi-notebook-multiple', name: 'addProdukCSController'},
+            { title: 'Layanan', icon: 'mdi-paw', name: 'addLayananCSController'},
+            { title: 'Hewan', icon: 'mdi-dog', name: 'addDataHewanCSController'},
+            { title: 'Member', icon: 'mdi-account-check', name: 'addMemberCSController'},
+            { title: 'Transaksi Produk', icon: 'mdi-account-check', name: 'addPenjualanProdukController'},
+            { title: 'Jasa Layanan', icon: 'mdi-account-check', name: 'addPenjualanLayanan'},
         ],
         }
     },

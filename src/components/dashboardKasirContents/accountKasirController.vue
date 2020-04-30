@@ -11,7 +11,6 @@
                                         <h1 class="flex my-4 default--text" style="margin-top:20px" align="center">
                                             Profile</h1>
                                         <br>
-
                                     </div>
 
                                     <v-text-field append-icon="mdi-heart" name="nama" label="Nama" type="text"
@@ -65,6 +64,7 @@ export default {
             nama: '',
             username: '',
             alamat: '',
+            role: '',
             no_telp: '',
             tgl_lhr: '',
             color: null, 

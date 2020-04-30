@@ -9,7 +9,7 @@
                         <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
                             @click="dialog = true">
                             <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                            Tambah Pegawai
+                            Tambah Member
                         </v-btn>
                     </v-flex>
                     <v-flex xs6 class="text-right">
@@ -288,7 +288,7 @@ export default {
         },
         
         deleteData(deleteId) { //mengahapus data    
-            this.service.append('aktor', localStorage.getItem('id_pegawai'));         
+            this.member.append('aktor', localStorage.getItem('id_pegawai'));         
             this.member.append('id_member', deleteId);
             var uri = this.$apiUrl + '/member/delete'; //data dihapus berdasarkan id_ukuran
             this.$http.post(uri, this.member).then(response =>{ 

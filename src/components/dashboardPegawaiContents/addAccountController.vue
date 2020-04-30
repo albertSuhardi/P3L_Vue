@@ -66,6 +66,7 @@ export default {
             username: '',
             alamat: '',
             no_telp: '',
+            role: '',
             tgl_lhr: '',
             color: null, 
             text: '', 

@@ -4,13 +4,16 @@
             <v-container grid-list-md mb-0>
                 <h2 class="text-md-center">List Produk</h2>
                 <v-layout row wrap style="margin:10px">
+                    <v-flex xs6>
+                        <v-switch v-model="showable" class="ml-2" label="Show Log"></v-switch>
+                    </v-flex>
                     <v-flex xs6 class="text-right">
                         <v-text-field v-model="keyword" append-icon="mdi-magnify" label="Search" hide-details>
                         </v-text-field>
                     </v-flex>
                 </v-layout>
 
-                <v-data-table :headers="headers" :items="products" :search="keyword" :loading="load">
+                <v-data-table :headers="headers" :items="products" :search="keyword" :loading="load" v-if="!showable">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_produk">
@@ -35,6 +38,27 @@
                         </tbody>
                     </template>
                 </v-data-table>
+                <div v-if="showable">
+                    <v-data-table :headers="headers_LOG" :items="productsLog" :search="keyword" :loading="load">
+                    <template v-slot:body="{ items }">
+                        <tbody>
+                            <tr v-for="(item,index) in items" :key="item.id_produk">
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ item.nama }}</td>
+                                <td>
+                                    <v-img class="white--text align-end" height="70px" width="50px"
+                                        v-bind:src="image + item.foto">
+                                    </v-img>
+                                </td>
+                                <td>{{ item.created_at }}</td>
+                                <td>{{ item.update_at }}</td>
+                                <td>{{ item.delete_at }}</td>
+                                <td>{{ item.aktor }}</td>
+                            </tr>
+                        </tbody>
+                    </template>
+                </v-data-table>
+                </div>
             </v-container>
         </v-card>
         <v-dialog v-model="dialog" persistent max-width="600px">
@@ -89,7 +113,10 @@
 import { log } from 'util'
 export default {    
     data () {       
-        return {         
+        return {       
+            image: 'http://localhost:8081/API_REST/upload/produk/',   
+            seen: false,
+            showable: false,  
             dialog: false,         
             keyword: '',         
             headers: [             
@@ -116,7 +143,7 @@ export default {
                 {               
                     text: 'Harga',               
                     value: 'harga'             
-                }, 
+                },
                 {
                     text: 'Foto',
                     value: 'foto'
@@ -125,8 +152,38 @@ export default {
                     text: 'Aksi',               
                     value: null             
                 },         
-            ],         
-            products: [],         
+            ],headers_LOG: [             
+                {               
+                    text: 'No',               
+                    value: 'no',             
+                },             
+                {               
+                    text: 'Nama Produk',               
+                    value: 'nama'             
+                },             
+                {
+                    text: 'Foto',
+                    value: 'foto'
+                },
+                {               
+                    text: 'Dibuat Tanggal',               
+                    value: 'created_at'             
+                },
+                {               
+                    text: 'Diubah Tanggal',               
+                    value: 'update_at'             
+                },
+                {               
+                    text: 'Dihapus Tanggal',               
+                    value: 'delete_at'             
+                },
+                {               
+                    text: 'Aktor',               
+                    value: 'aktor'             
+                },         
+            ],                    
+            products: [],
+            productsLog: [],         
             snackbar: false,          
             color: null,         
             text: '',          
@@ -151,6 +208,12 @@ export default {
             var uri = this.$apiUrl + '/produk'             
             this.$http.get(uri).then(response =>{                 
                 this.products=response.data.data             
+            })               
+        },  
+        getDataLog(){             
+            var uri = this.$apiUrl + '/produk/log'             
+            this.$http.get(uri).then(response =>{                 
+                this.productsLog=response.data.data             
             })               
         },  
         updateData(){             
@@ -274,7 +337,8 @@ export default {
         },         
     },     
     mounted(){         
-        this.getData();     
+        this.getData();  
+        this.getDataLog();        
         }, 
     } 
 </script> 
