@@ -52,8 +52,8 @@
             { title: 'Layanan', icon: 'mdi-paw', name: 'addLayananCSController'},
             { title: 'Hewan', icon: 'mdi-dog', name: 'addDataHewanCSController'},
             { title: 'Member', icon: 'mdi-account-check', name: 'addMemberCSController'},
-            { title: 'Transaksi Produk', icon: 'mdi-account-check', name: 'addPenjualanProdukController'},
-            { title: 'Jasa Layanan', icon: 'mdi-account-check', name: 'addPenjualanLayanan'},
+            { title: 'Transaksi Produk', icon: 'mdi-bag-personal', name: 'addPenjualanProdukController'},
+            { title: 'Jasa Layanan', icon: 'mdi-dog-service', name: 'addPenjualanLayanan'},
         ],
         }
     },

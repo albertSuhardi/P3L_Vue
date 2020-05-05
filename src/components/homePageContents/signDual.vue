@@ -209,7 +209,7 @@ export default {
     width: 100%;
   }
   .v-toolbar {
-    background-color: #B7472A;
+    background-color: #D68945;
     color: white;
   }
 

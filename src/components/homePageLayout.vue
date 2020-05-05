@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app color="#B7472A" class="white--text" height="75">
+    <v-app-bar app color="#D68945" class="white--text" height="75">
       <img class="logo" src="./logo.jpg" style="height:45px;width:45px">
       <v-toolbar-title class="Libre Baskerville display-0.8">
         <span class="ml-5">Kouvee Pet Shop</span>

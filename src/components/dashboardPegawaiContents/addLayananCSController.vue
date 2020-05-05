@@ -201,7 +201,6 @@ export default {
             this.updatedId = item.id_layanan
             console.log(item.id_layanan)
         },
-        
         deleteData(deleteId) { //mengahapus data      
             this.service.append('aktor', localStorage.getItem('id_pegawai'));       
             this.service.append('id_layanan', deleteId);

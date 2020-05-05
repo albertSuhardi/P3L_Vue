@@ -106,6 +106,24 @@ const routes = [
             name: 'addSupplierListController', 
             meta: { requiresAdmin: true},
             component: loadAdminPage('addSupplierListController')
+        },
+        { 
+          path: '/dashboardAdmin/StockProduct',            
+          name: 'StockProductController', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('StockProductController')
+        },
+        { 
+          path: '/dashboardAdmin/ShowStock',            
+          name: 'ShowStockDataProduct', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('ShowStockDataProduct')
+        },
+        { 
+          path: '/dashboardAdmin/AddStock',            
+          name: 'addStockProductController', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('addStockProductController')
         }
     ] 
 }, 
