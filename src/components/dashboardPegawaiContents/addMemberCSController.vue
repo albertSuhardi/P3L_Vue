@@ -18,7 +18,7 @@
                     </v-flex>
                 </v-layout>
 
-                <v-data-table :headers="headers" :items="members" :search="keyword" :loading="load">
+                <v-data-table :headers="headers" :items="members" :search="keyword" :loading="load" v-if="!showable">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_member">
@@ -41,7 +41,7 @@
                     </template>
                 </v-data-table>
                 <div v-if="showable">
-                    <v-data-table :headers="headers_LOG" :items="membersLog" :search="keyword" :loading="load">
+                    <v-data-table :headers="headers_Log" :items="membersLog" :search="keyword" :loading="load">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_member">
@@ -126,6 +126,7 @@ import { log } from 'util'
 export default {    
     data () {       
         return {       
+            showable: false,
             dialog: false,         
             keyword: '',         
             headers: [             
@@ -224,6 +225,8 @@ export default {
             this.member.append('tgl_lhr', this.form.tgl_lhr);
             this.member.append('no_telp', this.form.no_telp);
             this.member.append('status', this.form.status);
+            this.member.append('id_pegawai_cs', localStorage.getItem('id_pegawai'));
+            this.member.append('id_pegawai_kasir', 0);
             this.member.append('aktor', localStorage.getItem('id_pegawai'));
             this.member.append('id_member', 1);
             var uri =this.$apiUrl + '/member'             
@@ -252,8 +255,11 @@ export default {
                 harga : this.form.harga,
                 tgl_lhr : this.form.tgl_lhr,
                 no_telp : this.form.no_telp,
+                alamat : this.form.alamat,
                 status : this.form.status,
-                aktor : localStorage.getItem('id_pegawai')
+                aktor : localStorage.getItem('id_pegawai'),
+                id_pegawai_cs : localStorage.getItem('id_pegawai'), 
+                id_pegawai_kasir : 0
             }
             uri = this.$apiUrl + '/member/' + this.updatedId;             
             this.load = true             
@@ -288,7 +294,7 @@ export default {
         },
         
         deleteData(deleteId) { //mengahapus data    
-            this.service.append('aktor', localStorage.getItem('id_pegawai'));         
+            this.member.append('aktor', localStorage.getItem('id_pegawai'));         
             this.member.append('id_member', deleteId);
             var uri = this.$apiUrl + '/member/delete'; //data dihapus berdasarkan id_ukuran
             this.$http.post(uri, this.member).then(response =>{ 

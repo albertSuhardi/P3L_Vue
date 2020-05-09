@@ -55,12 +55,13 @@
         items: [
             { title: 'Pegawai', icon: 'mdi-account-multiple', name: 'addPegawaiController'},
             { title: 'Produk', icon: 'mdi-notebook-multiple', name: 'addProdukListController'},
-            { title: 'Hewan', icon: 'mdi-dog', name: 'HewanController'},
+            //{ title: 'Hewan', icon: 'mdi-dog', name: 'HewanController'},
             { title: 'Layanan', icon: 'mdi-paw', name: 'addLayananController'},
-            { title: 'Jenis Hewan', icon: 'mdi-cat', name: 'addJenisListController'},
-            { title: 'Ukuran Hewan', icon: 'mdi-ruler', name: 'addUkuranListController'},
+            //{ title: 'Jenis Hewan', icon: 'mdi-cat', name: 'addJenisListController'},
+            //{ title: 'Ukuran Hewan', icon: 'mdi-ruler', name: 'addUkuranListController'},
             { title: 'Member', icon: 'mdi-account-check', name: 'addMemberController'},
-            { title: 'Data Supplier', icon: 'mdi-account-star', name: 'addSupplierListController'},
+            //{ title: 'Data Supplier', icon: 'mdi-account-star', name: 'addSupplierListController'},
+            { title: 'Pet', icon: 'mdi-dog', name: 'ListHewanController'},
             { title: 'Stock Product', icon: 'mdi-gift-outline', name: 'StockProductController'},
         ],
         }

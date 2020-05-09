@@ -2,14 +2,14 @@
     <v-container>
         <v-card>
             <v-container grid-list-md mb-0>
-                <h2 class="text-md-center">Transaction</h2>
+                <h2 class="text-md-center">Transaksi Layanan</h2>
                 <v-text-field append-icon="mdi-book-account-outline" name="id_transaksi_layanan" label="Id Transaksi" type="text" v-model="id_transaksi_layanan" height="34" disabled="disabled"></v-text-field>
                 <v-layout row wrap style="margin:10px">
                     <v-flex xs6>
                         <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
                             @click="dialogTransaksi = true">
                             <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                            Pesan Produk
+                            Pesan Layanan
                         </v-btn>
                     </v-flex>
                     <v-flex xs6 class="text-xl-right">
@@ -20,7 +20,7 @@
                         <v-btn depressed rounded style="text-transform: none !important;" color="blue accent-3"
                             @click="dialog = true">
                             <v-icon size="18" class="mr-2">mdi-pencil-plus</v-icon>
-                            Tambah Pesanan Produk
+                            Tambah Pesanan Layanan
                         </v-btn>
                     </v-flex>
                     <v-flex xs6 class="text-right">
@@ -57,7 +57,7 @@
         <v-dialog v-model="dialog" persistent max-width="600px">
             <v-card>
                 <v-card-title>
-                    <span class="headline">Tambah Produk</span>
+                    <span class="headline">Tambah Layanan</span>
                 </v-card-title>
                 <v-card-text>
                     <v-container>
@@ -82,7 +82,7 @@
         <v-dialog v-model="dialogTransaksi" persistent max-width="600px">
             <v-card>
                 <v-card-title>
-                    <span class="headline">Pesan Produk</span>
+                    <span class="headline">Pesan Layanan</span>
                 </v-card-title>
                 <v-card-text>
                     <v-container>
@@ -179,7 +179,7 @@ export default {
                 name_service : '',
                 id_size : '',
                 id_type : '',
-                sum : '',                 
+                sum : 0,                 
             },         
             detail : new FormData,         
             typeInput: 'new',        
@@ -195,11 +195,13 @@ export default {
             this.$http.get(uri).then(response =>{                 
                 this.transactions=response.data.data;
                 for(i = 0; i < this.transactions.length; i++){
-                    if(this.transactions[i].aktor === localStorage.getItem('id_pegawai')){
-                        localStorage.setItem("id_transaksi_layanan", this.transactions[i].id_transaksi_layanan);
-                        console.log('WOII'+localStorage.getItem("id_transaksi_layanan"))
-                        this.id_transaksi_layanan = this.transactions[i].id_transaksi_layanan
-                        // console.log('ini id transaksi'+ this.id_transaksi_produk)
+                    if(this.transactions[i].sub_total === '0'){
+                        if(this.transactions[i].aktor === localStorage.getItem('id_pegawai')){
+                            localStorage.setItem("id_transaksi_layanan", this.transactions[i].id_transaksi_layanan);
+                            console.log('id t layanan : '+localStorage.getItem("id_transaksi_layanan"))
+                            this.id_transaksi_layanan = this.transactions[i].id_transaksi_layanan
+                            // console.log('ini id transaksi'+ this.id_transaksi_produk)
+                        }
                     }
                 }
 
@@ -302,8 +304,8 @@ export default {
                     hargaSz = row.harga;
                 }
             })
-            subHarga = parseFloat(hargaS) + parseFloat(hargaSz) + parseFloat(hargaT);
-            
+
+            subHarga = (parseFloat(hargaS) + parseFloat(hargaSz) + parseFloat(hargaT))* parseInt(this.form.sum);
             this.detail.append('jumlah', this.form.sum);
             this.detail.append('id_layanan', id_service);
             this.detail.append('id_ukuran', this.form.id_size);
@@ -320,7 +322,6 @@ export default {
                 this.load = false;               
                 this.dialog = false;     
                 this.getDataDetail();
-                this.resetForm(); //mengambil data pegawai                  
             }).catch(error =>{               
                 this.errors = error               
                 this.snackbar = true;               
@@ -375,19 +376,28 @@ export default {
                     hargaS = row.harga;
                 }
             })
+            console.log('Layan'+ hargaS)
 
             this.AllDataType.forEach(row => {
                 if(row.id_jenis === this.form.id_type){
                     hargaT = row.harga;
                 }
             })
+            console.log('jenis '+ hargaT)
 
             this.AllDataSize.forEach(row => {
                 if(row.id_ukuran === this.form.id_size){
+                    console.log(row.harga)
                     hargaSz = row.harga;
                 }
             })
-            subHarga = parseFloat(hargaS) + parseFloat(hargaSz) + parseFloat(hargaT);
+            console.log('id_Size '+ this.form.id_size)
+            console.log('Size '+ hargaSz)
+
+            //subHarga = parseFloat(hargaS) + parseFloat(hargaSz) + parseFloat(hargaT) * parseFloat(this.form.sum);
+            subHarga = (parseFloat(hargaS) + parseFloat(hargaSz) + parseFloat(hargaT));
+            subHarga = parseFloat(subHarga)*parseFloat(this.form.sum);
+            console.log('total '+ subHarga)
 
             requestBody = {
                 id_detail_layanan : this.updatedId,
@@ -439,13 +449,6 @@ export default {
                 this.text = 'Try Again';                 
                 this.color = 'red'; 
             })         
-        },
-        setDataClose(){             
-            if (localStorage.getItem('stok') == 0) {              
-                this.dialog = false;
-            } else {
-                
-            }         
         },         
         setForm(){             
             if (this.typeInput === 'new') {              
@@ -464,8 +467,9 @@ export default {
             this.name_member = '',
             this.totalHarga = 0,
             localStorage.setItem('id_transaksi_layanan', null),
-            localStorage.setItem('nama_member', null)
-        }     
+            localStorage.setItem('nama_member', null),
+            localStorage.setItem('id_hewan', null)
+        },     
     },     
     mounted(){
         if(localStorage.getItem('id_transaksi_layanan') == 0){
@@ -479,10 +483,12 @@ export default {
         this.getDataType();
         this.getDataSize();
         this.getMember();
+
         this.name_member = localStorage.getItem('nama_member');
         console.log(this.name_member)
-        //console.log(localStorage.getItem('id_transaksi_layanan'))
-        localStorage.setItem('stok', 0);
+        console.log(this.form.id_type)
+        console.log(this.form.id_size)
+        console.log(localStorage.getItem('id_transaksi_layanan'))
         }, 
     } 
 </script> 

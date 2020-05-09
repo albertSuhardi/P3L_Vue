@@ -224,6 +224,8 @@ export default {
             this.member.append('tgl_lhr', this.form.tgl_lhr);
             this.member.append('no_telp', this.form.no_telp);
             this.member.append('status', this.form.status);
+            this.member.append('id_pegawai_cs', 0);
+            this.member.append('id_pegawai_kasir', 0);
             this.member.append('aktor', localStorage.getItem('id_pegawai'));
             this.member.append('id_member', 1);
             var uri =this.$apiUrl + '/member'             
@@ -253,7 +255,9 @@ export default {
                 tgl_lhr : this.form.tgl_lhr,
                 no_telp : this.form.no_telp,
                 status : this.form.status,
-                aktor : localStorage.getItem('id_pegawai')
+                aktor : localStorage.getItem('id_pegawai'),
+                id_pegawai_cs : 0,
+                id_pegawai_kasir : 0
             }
             uri = this.$apiUrl + '/member/' + this.updatedId;             
             this.load = true             

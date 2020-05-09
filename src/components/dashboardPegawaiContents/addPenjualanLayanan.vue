@@ -242,7 +242,6 @@ export default {
                 this.color = 'green'; //memberi warna snackbar               
                 this.text = response.data.message; //memasukkan pesan ke snackbar               
                 this.load = false;                 
-                this.getData(); //mengambil data user               
             }).catch(error =>{               
                 this.errors = error               
                 this.snackbar = true;               
@@ -251,7 +250,7 @@ export default {
                 this.load = false;           
             })
         },    
-        updateLayanan(item){             
+        updateLayanan(item){  
             var uri, requestBody
             requestBody = {
                 id_transaksi_layanan : item.id_transaksi_layanan,
@@ -274,29 +273,37 @@ export default {
                 this.load = false;                
             })         
         },              
-        updateData(item){             
-            var uri, requestBody
-            requestBody = {
-                sub_total : item.sub_total,
-                id_pegawai_cs : localStorage.getItem('id_pegawai'),
-                id_transaksi_layanan : item.id_transaksi_layanan
-            }
-            uri = this.$apiUrl + '/transaksi_layanan/pesan';             
-            this.load = true             
-            this.$http.put(uri, this.$qs.stringify(requestBody)).then(response =>{ 
-                this.snackbar = true; //mengaktifkan snackbar               
-                this.color = 'green'; //memberi warna snackbar               
-                this.text = response.data.message; //memasukkan pesan ke snackbar               
-                this.load = false;     
-                this.getData();               
-                this.typeInput = 'new';           
-            }).catch(error =>{               
-                this.errors = error               
+        updateData(item){    
+            if(item.status_layanan == 'belum selesai'){
+                this.load = true;
                 this.snackbar = true;               
-                this.text = 'Try Again';               
+                this.text = 'Status Layanan Belum Selesai';               
                 this.color = 'red';               
                 this.load = false;                
-            })         
+            }else{
+                var uri, requestBody
+                requestBody = {
+                    sub_total : item.sub_total,
+                    id_pegawai_cs : localStorage.getItem('id_pegawai'),
+                    id_transaksi_layanan : item.id_transaksi_layanan
+                }
+                uri = this.$apiUrl + '/transaksi_layanan/pesan';             
+                this.load = true             
+                this.$http.put(uri, this.$qs.stringify(requestBody)).then(response =>{ 
+                    this.snackbar = true; //mengaktifkan snackbar               
+                    this.color = 'green'; //memberi warna snackbar               
+                    this.text = response.data.message; //memasukkan pesan ke snackbar               
+                    this.load = false;     
+                    this.getData();               
+                    this.typeInput = 'new';           
+                }).catch(error =>{               
+                    this.errors = error               
+                    this.snackbar = true;               
+                    this.text = 'Try Again';               
+                    this.color = 'red';               
+                    this.load = false;                
+                })         
+            }
         },             
         editHandler(item){           
             localStorage.setItem('id_transaksi_layanan', item.id_transaksi_layanan);
@@ -321,7 +328,7 @@ export default {
             })         
         },
         deleteHandler(item){
-            if(item.sub_total === '0'){
+            if(item.sub_total == '0'){
                 this.deleteData(item.id_transaksi_layanan)
             }else{
                 localStorage.setItem('id_transaksi_layanan', item.id_transaksi_layanan);
@@ -331,12 +338,12 @@ export default {
             }
         },
         setForm(){             
-            this.sendData(),
+            this.sendData();
             localStorage.setItem('id_hewan', this.form.id_hewan),
             localStorage.setItem('id_transaksi_layanan', 0),
             localStorage.setItem('nama_member', this.form.name_member),
             console.log('nama member'+this.form.name_member)
-            this.resetForm()
+            this.resetForm();
             this.$router.replace({ path : '/dashboardPegawai/ServiceCS' })
         },   
         resetForm(){             
@@ -352,9 +359,9 @@ export default {
         this.getData();  
         this.getDataLog();
         this.getAnimal();     
+        localStorage.setItem('id_transaksi_layanan', null);   
         console.log(localStorage.getItem('id_transaksi_layanan'))
-        // localStorage.setItem('id_transaksi_layanan', null);   
-        // localStorage.setItem('id_hewan', null);   
+        localStorage.setItem('id_hewan', null);   
         }, 
     } 
 </script> 

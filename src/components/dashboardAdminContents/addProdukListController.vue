@@ -25,7 +25,9 @@
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ item.nama }}</td>
                                 <td>{{ item.unit }}</td>
-                                <td>{{ item.stok }}</td>
+                                <td>
+                                    <v-chip :color="getColor(item)" dark>{{ item.stok }}</v-chip>
+                                </td>
                                 <td>{{ item.min_stok }}</td>
                                 <td>{{ item.harga }}</td>
                                 <v-img class="white--text align-end" height="70px" width="50px"
@@ -367,7 +369,16 @@ export default {
                 this.load = false;    
                 this.typeInput = 'new';             
             })         
-        },         
+        },    
+        getColor(item){   
+            if( parseInt(item.stok) > parseInt(item.min_stok)){
+                return 'green'
+            }else if(parseInt(item.stok) <= parseInt(item.min_stok)){
+                return 'red'
+            }else{
+                return 'blue'
+            }
+        }          
     },     
     mounted(){         
         this.getData();  

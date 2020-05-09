@@ -188,8 +188,7 @@ export default {
                     if(this.transactions[i].aktor === localStorage.getItem('id_pegawai')){
                         localStorage.setItem("id_transaksi_produk", this.transactions[i].id_transaksi_produk);
                         console.log('ini id transaksi'+localStorage.getItem("id_transaksi_produk"))
-                        this.id_transaksi_produk = this.transactions[i].id_transaksi_produk
-                        // console.log('ini id transaksi'+ this.id_transaksi_produk)
+                        this.id_transaksi_produk = this.transactions[i].id_transaksi_produk;
                     }
                 }
 
@@ -267,16 +266,16 @@ export default {
             this.detail.append('jumlah', this.form.jumlah);      
             this.detail.append('id_transaksi_produk', localStorage.getItem('id_transaksi_produk'));
             this.detail.append('id_detail_produk', 1);
+
             var uri =this.$apiUrl + '/detail_transaksi_produk'             
             this.load = true             
-            this.$http.post(uri,this.detail).then(response =>{               
+            this.$http.post(uri, this.detail).then(response =>{               
                 this.snackbar = true; //mengaktifkan snackbar               
                 this.color = 'green'; //memberi warna snackbar               
                 this.text = response.data.message; //memasukkan pesan ke snackbar               
                 this.load = false;               
                 this.dialog = false;     
-                this.getDataDetail();
-                this.resetForm(); //mengambil data pegawai                  
+                this.getDataDetail(); //mengambil data pegawai                  
             }).catch(error =>{               
                 this.errors = error               
                 this.snackbar = true;               
@@ -298,7 +297,7 @@ export default {
             requestBody = {
                 id_member : id_member,
                 sub_total : this.totalHarga,
-                id_pegawai_cs : null,
+                id_pegawai_cs : 0,
                 id_transaksi_produk : localStorage.getItem('id_transaksi_produk')
             }
             uri = this.$apiUrl + '/transaksi_produk/';             
@@ -361,25 +360,24 @@ export default {
             })         
         }, 
         minusData(){
-            var uri, requestBody
+            var uri, requestBody;
             var id_produk;
-            console.log('weeeewwww')
-            this.AllProduct.forEach(row => {
+            this.AllDataProduct.forEach(row => {
                 if(row.nama === this.form.nama_produk){
                     id_produk = row.id_produk;
+                    this.stok = parseInt(row.stok) - parseInt(this.form.jumlah);
                 }
             })
-            this.simpan = localStorage.getItem('stok') - parseInt(this.form.jumlah);
-            console.log('simpan ini' + this.simpan)
+            console.log('minus Stok' + this.stok)
             requestBody = {
                 id_produk : id_produk,
-                stok : this.simpan
+                stok : this.stok
             }
             uri = this.$apiUrl + '/reverse_data/' + this.id_produk;             
             this.$http.put(uri, this.$qs.stringify(requestBody)).then(response =>{ 
                 this.dialog = false;
                 this.resetForm();   
-                localStorage.setItem('stok', 0);             
+                this.stok = 0;
             }).catch(error =>{               
                 this.errors = error;           
             })         
@@ -450,7 +448,9 @@ export default {
         },         
         setForm(){             
             if (this.typeInput === 'new') {              
-                this.sendData()
+                this.sendData(),
+                this.minusData(),
+                this.getDataProduk()
             } else {
                 this.updateData(),
                 this.minusData(),
@@ -471,7 +471,7 @@ export default {
         }     
     },     
     mounted(){
-        if(localStorage.getItem('id_transaksi_produk') === 0){
+        if(localStorage.getItem('id_transaksi_produk') == 0){
             this.getDataTransaction(); 
         }else if(localStorage.getItem('id_transaksi_produk') != 0){
             this.getDataTransactionUpdate(); 
@@ -479,6 +479,7 @@ export default {
         this.getDataDetail();
         this.getDataProduk();
         this.getMember();
+        this.getProduk();
         this.nama_member = localStorage.getItem('nama_member');
         console.log(localStorage.getItem('id_transaksi_produk'))
         localStorage.setItem('stok', 0);

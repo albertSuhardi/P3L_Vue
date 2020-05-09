@@ -48,7 +48,7 @@
           <v-btn
             color="warning"
             class="mr-4"
-            @click="deleteOrder()"
+            @click="deleteOrder(id_pengadaan)"
           >
             Cancel Stock
           </v-btn>
@@ -140,6 +140,7 @@
                     <td>{{ item.id_pengadaan}}</td>
                     <td>{{ item.nama }}</td>
                     <td>{{ item.jumlah}}</td>
+                    <td>{{ item.sub_harga}}</td>
                     <td class="text-center">
                         <v-btn icon color="indigo" light @click="editHandler(item)">
                             <v-icon>mdi-pencil</v-icon>
@@ -187,6 +188,10 @@
           {               
               text: 'Jumlah Pesanan',               
               value: 'jumlah'             
+          },
+          {               
+              text: 'Harga Sub Pemesanan',               
+              value: 'sub_harga'             
           },
           {               
               text: 'Aksi',
@@ -247,10 +252,12 @@
             this.$http.get(uri).then(response =>{                 
                 this.stock=response.data.data      
                 for(this.i = 0; this.i < this.stock.length; this.i++){
-                  if(this.stock[this.i].update_at == null){
+                  if(this.stock[this.i].pengeluaran == 0){
                     this.id_pengadaan = this.stock[this.i].id_pengadaan
                   }else if(this.stock[this.i].id_pengadaan == localStorage.getItem('id_pengadaan')){
-                    this.id_pengadaan = this.stock[this.i].id_pengadaan
+                    this.id_pengadaan = this.stock[this.i].id_pengadaan,
+                    this.name_supplier = this.stock[this.i].nama
+                    console.log(this.name_supplier)
                   }
                 }
                 
@@ -266,49 +273,71 @@
       getProduk(){
         var uri = this.$apiUrl + '/produk'             
             this.$http.get(uri).then(response =>{                 
-                this.products=response.data.data             
-                this.products.forEach(row => { this.name_product_array.push(row.nama) });
+                this.products=response.data.data
+                for(this.i = 0; this.i < this.products.length; this.i++){
+                  if( parseInt(this.products[this.i].stok) <= parseInt(this.products[this.i].min_stok) ){
+                      // this.products.forEach(row => { this.name_product_array.push(row.nama) });
+                      this.name_product_array.push(this.products[this.i].nama);
+                      console.log(this.products[this.i].nama);
+                  }
+                }             
             })               
       },
       getDetailOrder(){
         this.addOrders = [];
+        this.totalHarga = 0;
         var uri = this.$apiUrl + '/detail_pengadaan_produk'             
             this.$http.get(uri).then(response =>{                 
                 this.orders=response.data.data
                 for(this.i = 0; this.i < this.orders.length; this.i++){
                   if(this.orders[this.i].id_pengadaan == this.id_pengadaan){
-                    this.addOrders.push(this.orders[this.i])
+                    this.addOrders.push(this.orders[this.i]);
+                    this.totalHarga = parseInt(this.totalHarga) + parseInt(this.orders[this.i].sub_harga);
+                    console.log(this.totalHarga);
                   }
                 }
             })               
       },
-      sendData(){       
-            var id_produk;
-            this.products.forEach(row => { 
-              if(row.nama == this.form.name_product){
-                id_produk = row.id_produk;
-              }
-            });
-            this.addOrder.append('id_produk', id_produk);
-            this.addOrder.append('id_pengadaan', this.id_pengadaan);
-            this.addOrder.append('jumlah', this.form.jumlah);
-            this.addOrder.append('id_detail_produk', 1);
-            var uri =this.$apiUrl + '/detail_pengadaan_produk'             
-            this.load = true;             
-            this.$http.post(uri,this.addOrder).then(response =>{               
-                this.snackbar = true; //mengaktifkan snackbar               
-                this.color = 'green'; //memberi warna snackbar               
-                this.text = response.data.message; //memasukkan pesan ke snackbar               
-                this.load = false;                 
-                this.getDetailOrder(); //mengambil data user               
-                this.resetForm(); //mengambil data ukuran                       
-            }).catch(error =>{               
-                this.errors = error               
-                this.snackbar = true;               
-                this.text = 'Try Again';               
-                this.color = 'red';               
-                this.load = false;           
-            })
+      sendData(){
+            if(this.form.jumlah == 0){
+              this.load = true;
+              this.snackbar = true;               
+              this.text = 'Data belum diisi';               
+              this.color = 'red';               
+              this.load = false;
+              this.resetForm();
+            }else{
+              var id_produk, harga;
+              this.products.forEach(row => { 
+                if(row.nama == this.form.name_product){
+                  id_produk = row.id_produk;
+                  harga = row.harga;
+                }
+              });
+              harga = harga*this.form.jumlah;
+              console.log(harga);
+              this.addOrder.append('id_produk', id_produk);
+              this.addOrder.append('id_pengadaan', this.id_pengadaan);
+              this.addOrder.append('sub_harga', harga);
+              this.addOrder.append('jumlah', this.form.jumlah);
+              this.addOrder.append('id_detail_produk', 1);
+              var uri =this.$apiUrl + '/detail_pengadaan_produk'             
+              this.load = true;             
+              this.$http.post(uri,this.addOrder).then(response =>{               
+                  this.snackbar = true; //mengaktifkan snackbar               
+                  this.color = 'green'; //memberi warna snackbar               
+                  this.text = response.data.message; //memasukkan pesan ke snackbar               
+                  this.load = false;                 
+                  this.getDetailOrder(); //mengambil data user               
+                  this.resetForm(); //mengambil data ukuran                       
+              }).catch(error =>{               
+                  this.errors = error               
+                  this.snackbar = true;               
+                  this.text = 'Try Again';               
+                  this.color = 'red';               
+                  this.load = false;           
+              })
+            }       
       },
       updateOrder(){
         var id_supplier;
@@ -320,14 +349,16 @@
          this.load = true             
         if(id_supplier == null){            
           this.snackbar = true;               
-          this.text = 'Try Again';               
+          this.text = 'Harus memasukkan data supplier yg dituju!';               
           this.color = 'red';               
           this.load = false;               
         }else{
           var uri, requestBody;
+          console.log('this.totalHarga');
           requestBody = {
                 id_pengadaan : this.id_pengadaan,
-                id_supplier : id_supplier
+                id_supplier : id_supplier,
+                pengeluaran : this.totalHarga
             }
             uri = this.$apiUrl + '/pengadaan_produk/' + this.updatedId;             
             this.$http.put(uri, this.$qs.stringify(requestBody)).then(response =>{ 
@@ -343,23 +374,26 @@
                 this.color = 'red';               
                 this.load = false;               
             })     
-            this.$router.replace({ path : '/dashboardAdmin/ShowStock' })    
+            this.$router.push({ path: "/dashboardAdmin/StockProduct" });
         }
-        
       }, 
       updateData(){             
-          var uri, requestBody, id_produk;
+          var uri, requestBody, id_produk, harga;
           this.products.forEach(row => { 
             if(row.nama == this.form.name_product){
               id_produk = row.id_produk;
+              harga = row.harga;
             }
           });
+          harga = harga*this.form.jumlah;
+
           requestBody = {
               id_pengadaan : this.id_pengadaan,
               id_detail_produk : this.updatedId,
               nama : this.form.nama,
               jumlah : this.form.jumlah,
-              id_produk : id_produk
+              id_produk : id_produk,
+              sub_harga : harga
           }
           uri = this.$apiUrl + '/detail_pengadaan_produk/' + this.updatedId;             
           this.load = true             
@@ -388,21 +422,30 @@
           this.updatedId = item.id_detail_produk
           console.log(item.id_detail_produk)
       },
-      deleteOrder() { //mengahapus data      
-          this.order.append('id_pengadaan', this.id_pengadaan);
-          var uri = this.$apiUrl + '/pengadaan_produk/destroy'; //data dihapus berdasarkan id_ukuran
-          this.$http.post(uri, this.order).then(response =>{ 
-              this.snackbar = true;                 
-              this.text = response.data.message;                 
-              this.color = 'green'                 
-              this.deleteDialog = false;                              
-          }).catch(error =>{                 
-              this.errors = error                 
-              this.snackbar = true;                 
-              this.text = 'Try Again';                 
-              this.color = 'red'; 
-          })         
-        this.$router.replace({ path : '/dashboardAdmin/StockProduct' })    
+      deleteOrder(idDelete) { //mengahapus data      
+        console.log(idDelete);
+        if(this.totalHarga == 0){
+          this.order.append('id_pengadaan', idDelete);
+            var uri = this.$apiUrl + '/pengadaan_produk/delete'; //data dihapus berdasarkan id_ukuran
+            this.$http.post(uri, this.order).then(response =>{ 
+                this.snackbar = true;                 
+                this.text = response.data.message;                 
+                this.color = 'green'                 
+                this.deleteDialog = false;                              
+            }).catch(error =>{                 
+                this.errors = error                 
+                this.snackbar = true;                 
+                this.text = 'Try Again';                 
+                this.color = 'red'; 
+            })         
+          this.$router.replace({ path : '/dashboardAdmin/StockProduct' })    
+        }else{
+          this.load = true;
+          this.snackbar = true;                 
+          this.text = 'Pastikan detail pembeliaan produk pengadaan kosong';                 
+          this.color = 'red'; 
+          this.load = false;
+        }
       },
       deleteData(deleteId) { //mengahapus data      
           this.addOrder.append('id_detail_produk', deleteId);

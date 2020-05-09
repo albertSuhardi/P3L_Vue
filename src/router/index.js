@@ -124,6 +124,12 @@ const routes = [
           name: 'addStockProductController', 
           meta: { requiresAdmin: true},
           component: loadAdminPage('addStockProductController')
+        },
+        { 
+          path: '/dashboardAdmin/Pet',            
+          name: 'ListHewanController', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('ListHewanController')
         }
     ] 
 }, 

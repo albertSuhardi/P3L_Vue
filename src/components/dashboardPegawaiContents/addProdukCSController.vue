@@ -236,7 +236,7 @@ export default {
                 this.text = response.data.status; //memasukkan pesan ke snackbar               
                 this.load = false;               
                 this.dialog = false               
-                this.getData(); //mengambil data ukuran          
+                this.getData(); 
                 this.resetForm();               
                 this.typeInput = 'new';           
             }).catch(error =>{               
@@ -271,7 +271,8 @@ export default {
                 this.text = response.data.message;                 
                 this.color = 'green'                 
                 this.deleteDialog = false;                 
-                this.getData();             
+                this.getData(); 
+                this.getDataLog();            
             }).catch(error =>{                 
                 this.errors = error                 
                 this.snackbar = true;                 
