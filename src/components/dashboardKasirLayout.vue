@@ -2,11 +2,14 @@
     <div>
         <v-navigation-drawer v-model="drawer" app clipped fixed temporary>
         <v-list-item>
+            <v-list-item-avatar>
+                <img src="./logo.jpg">
+            </v-list-item-avatar>
             <v-list-item-content>
                 <v-list-item-title class="title">
                     Kouvee Pet Shop
                 </v-list-item-title>
-                <v-list-item-title class="subtitle" color="white">
+                <v-list-item-title class="subtitle">
                     Number 1 in Country
                 </v-list-item-title>
                 </v-list-item-content>
@@ -24,7 +27,9 @@
     </v-list>
  <template v-slot:append>
     <div class="pa-2">
-         <v-btn id="btnLog" color=primary block @click="signOut()">Sign Out</v-btn>
+        <v-btn class="mx-2" fab dark x-large color="red" @click="signOut()">
+            <v-icon>mdi-door-open</v-icon>
+        </v-btn>
             </div>
                 </template>
                     </v-navigation-drawer>
@@ -70,15 +75,21 @@
 
 <style lang="scss" scoped>
 .v-list-item .v-list-item__title {
-    color: white;
+    color: #D68945;
 }
 .v-navigation-drawer {
-  background-color: #B7472A;
-  color : #5CA2A5;
+  background-color: white;
+  color : #D68945;
+  border-color: #D68945;
+}
+
+.v-btn{
+    align-content: center;
+    align-items: center;
 }
 
 .v-app-bar {
-    background-color: #B7472A;
+    background-color: #D39C66;
 }
 
 .title {
@@ -89,8 +100,12 @@
     color: white;
 }
 
-#btnLog {
-    color: white;
+// #btnLog {
+//     color: white;
+// }
+
+.v.icon{
+    color: #D68945;
 }
 
 .logo {
@@ -99,7 +114,17 @@
   background-color: white;
 }
 
-.mdi {
-    color : white;
+.v-list-item-icon{
+    color: #D68945;
 }
+
+.v-toolbar__content > .v-btn.v-btn--icon:first-child, .v-toolbar__extension > .v-btn.v-btn--icon:first-child {
+    color: white;
+    margin-left: -12px;
+}
+
+.mdi{
+    color: #D68945;
+}
+
 </style>

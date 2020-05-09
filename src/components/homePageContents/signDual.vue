@@ -168,9 +168,9 @@ export default {
               console.log(localStorage.getItem("id_pegawai"));
 
               
-              this.$session.set('id_pegawai', response.data.id_pegawai);
-              console.log(response.data.data);
-              console.log(this.$session.get('id_pegawai'));
+              // this.$session.set('id_pegawai', response.data.id_pegawai);
+              // console.log(response.data.data);
+              // console.log(this.$session.get('id_pegawai'));
 
               this.$router.replace({ path : '/dashboardKasir' });              
               
