@@ -42,7 +42,7 @@
             class="mr-4"
             @click="updateOrder()"
           >
-            Add New Stock
+            Tambah Stok
           </v-btn>
 
           <v-btn
@@ -50,7 +50,7 @@
             class="mr-4"
             @click="deleteOrder(id_pengadaan)"
           >
-            Cancel Stock
+            Batal Pesan
           </v-btn>
 
           <v-btn
@@ -58,7 +58,7 @@
             class="mr-4"
             @click="show()"
           >
-            Show Order
+            Tampil Pengadaan
           </v-btn>
         </v-col>
       </v-row>
@@ -121,7 +121,7 @@
       class="mr-2"
       @click="setForm()"
     >
-      Add New Item
+      Tambah Item
     </v-btn>
 
     <!-- <v-btn
@@ -435,7 +435,7 @@
             }).catch(error =>{                 
                 this.errors = error                 
                 this.snackbar = true;                 
-                this.text = 'Try Again';                 
+                this.text = 'Gagal Delete';                 
                 this.color = 'red'; 
             })         
           this.$router.replace({ path : '/dashboardAdmin/StockProduct' })    
@@ -448,9 +448,10 @@
         }
       },
       deleteData(deleteId) { //mengahapus data      
+          console.log(deleteId);
           this.addOrder.append('id_detail_produk', deleteId);
-          var uri = this.$apiUrl + '/detail_pengadaan_produk/delete'; //data dihapus berdasarkan id_ukuran
-          this.$http.post(uri, this.addOrder).then(response =>{ 
+          var uri = this.$apiUrl + '/detail_pengadaan_produk/' + deleteId; //data dihapus berdasarkan id_ukuran
+          this.$http.delete(uri, this.addOrder).then(response =>{ 
               this.snackbar = true;                 
               this.text = response.data.message;                 
               this.color = 'green'                 
@@ -459,7 +460,7 @@
           }).catch(error =>{                 
               this.errors = error                 
               this.snackbar = true;                 
-              this.text = 'Try Again';                 
+              this.text = 'Gagal Delete';                 
               this.color = 'red'; 
           })         
       },

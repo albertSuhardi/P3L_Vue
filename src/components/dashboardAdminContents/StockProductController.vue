@@ -62,23 +62,23 @@ export default {
             items: [
             {
               color: '#D6B066',
-              src: 'https://pngimg.com/uploads/box/box_PNG132.png',
-              title: 'Add New Stock Product',
-              artist: 'Check your product so you can restok your product if your stock start to be empty.',
+              src: 'https://media.giphy.com/media/3Mb5Mzii1nxMmNdM1P/giphy.gif',
+              title: 'Order Stok Produk baru',
+              artist: 'Cek produkmu jadi kamu dapat mengisi kembali persediaanmu ketika mulai habis.',
               // button: this.sign(),
             },
             {
               color: '#D29C76',
               src: 'https://www.storage.ie/wp-content/uploads/2017/03/document_storage-1.jpg',
-              title: 'Show Me My Stock',
-              artist: 'Show me All Data in My Stock',
+              title: 'Tampilkan List Order',
+              artist: 'Menampilkan semua list stok yang akan dan pernah dilakukan.',
               // button: this.$router.replace({ path : '/dashboardAdmin' }),
             },
             {
               color: '#3C3D3F',
               src: 'https://ak.picdn.net/shutterstock/videos/15071320/thumb/4.jpg',
-              title: 'My Partner',
-              artist: 'Check on my partnet for my pet shop',
+              title: 'Supplier',
+              artist: 'Cek Rekanku!! Pastikan tidak ada data yang salah disana!',
               // button: this.$router.replace({ path : '/dashboardAdmin' }),
             },
           ],
@@ -87,10 +87,10 @@ export default {
     },     
     methods:{         
         sign(item){
-        if(item.title === 'Add New Stock Product'){
+        if(item.title === 'Order Stok Produk baru'){
           this.sendData(),
           this.$router.replace({ path : '/dashboardAdmin/AddStock' })
-        }else if(item.title === 'Show Me My Stock'){
+        }else if(item.title === 'Tampilkan List Order'){
           this.$router.replace({ path : '/dashboardAdmin/ShowStock' })
         }else{
           this.$router.replace({ path : '/dashboardAdmin/addSupplier' }) 

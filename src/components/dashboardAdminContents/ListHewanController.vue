@@ -61,23 +61,23 @@ export default {
         return {         
             items: [
             {
-              color: '#E5913B',
-              src: 'https://lh3.googleusercontent.com/proxy/RcWl1S8JE7Y9CQh6MiRN0Grxa_ji_E7SAKKuTuBUcz51o0r15_vSCWcTipFLMGcDfL7H0MakB3qUejGdr0hwpfYiT3hi6MnDGlRwcBXpAbJrFA2cEnMBadcACPCtbcDBub9QtcwNprT0dlBj8frgXvLUDDtNQPbnK6BkshYD_WAGgSqjctKAirRF9SRLVxA5',
-              title: 'All Pet Data',
+              color: '#FCB349',
+              src: 'https://i.pinimg.com/originals/ab/e5/0b/abe50b3fb45cb809250e2ae7a964d808.gif',
+              title: 'Data Hewan Customer',
               artist: 'All pet data can be seen here !',
               // button: this.sign(),
             },
             {
-              color: '#A6D2DD',
-              src: 'https://ae01.alicdn.com/kf/H970a0a25a6624e37acf65c415ffd2bdbn.jpg_q50.jpg',
-              title: 'All Variant Size',
+              color: '#C9C3B7',
+              src: 'https://media.tenor.com/images/5fdcd5c8ce6becacceca1876b037b564/tenor.gif',
+              title: 'Ukuran Hewan',
               artist: 'Want to check all type size or add new size?',
               // button: this.$router.replace({ path : '/dashboardAdmin' }),
             },
             {
               color: '#DE5658',
-              src: 'https://indopetexpo.id/wp-content/uploads/2018/02/pet-rules-06.png',
-              title: 'All Type of Pet',
+              src: 'https://3.bp.blogspot.com/-8YRRUt0vFdk/WfiNf_I-slI/AAAAAAAMFJg/QNU0upty-rYKHUWuZspA2jPEbfs4PscXwCLcBGAs/s1600/AW598094_00.gif',
+              title: 'Jenis Hewan',
               artist: 'You can add new type into your pet list for your pet shop!',
               // button: this.$router.replace({ path : '/dashboardAdmin' }),
             },
@@ -88,9 +88,9 @@ export default {
     },     
     methods:{         
         sign(item){
-        if(item.title === 'All Pet Data'){
+        if(item.title === 'Data Hewan Customer'){
           this.$router.replace({ path : '/dashboardAdmin/HewanControl' })
-        }else if(item.title === 'All Variant Size'){
+        }else if(item.title === 'Ukuran Hewan'){
           this.$router.replace({ path : '/dashboardAdmin/addUkuran' })
         }else{
           this.$router.replace({ path : '/dashboardAdmin/addJenis' }) 

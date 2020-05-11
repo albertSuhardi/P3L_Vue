@@ -33,7 +33,7 @@
                                     <v-btn icon color="indigo" light @click="editHandler(item)">
                                         <v-icon>mdi-pencil</v-icon>
                                     </v-btn>
-                                    <v-btn icon color="error" light @click="deleteData(item.id_pengadaan)">
+                                    <v-btn icon color="error" light @click="setDelete(item)">
                                         <v-icon>mdi-delete</v-icon>
                                     </v-btn>
                                     <v-btn icon color="blue" light @click="printed(item)">
@@ -56,6 +56,11 @@
                                 <td>{{ item.delete_at}}</td>
                                 <td>{{ item.printed_at}}</td>   
                                 <td>{{ 'OWNER' }}</td>
+                                <td class="text-center">
+                                    <v-btn icon color="blue" light @click="printed(item)">
+                                        <v-icon>mdi-printer</v-icon>
+                                    </v-btn>
+                                </td>
                             </tr>
                         </tbody>
                     </template>
@@ -210,17 +215,17 @@ export default {
                 this.stocksLog=response.data.data             
             })               
         },
-        // getOrderDetail(item){             
-        //     var uri = this.$apiUrl + '/detail_pengadaan_produk'             
-        //     this.$http.get(uri).then(response =>{                 
-        //         this.detailOrder=response.data.data;
-        //         for(this.i = 0; this.i < this.detailOrder.length; this.i++){
-        //           if(this.detailOrder[this.i].id_pengadaan == item.id_pengadaan){
-        //             this.deleteOnebyOne(this.detailOrder[this.i].id_detail_produk);
-        //           }
-        //         }
-        //     })               
-        // }, 
+        getOrderDetail(item){             
+            var uri = this.$apiUrl + '/detail_pengadaan_produk'             
+            this.$http.get(uri).then(response =>{                 
+                this.detailOrder=response.data.data;
+                for(this.i = 0; this.i < this.detailOrder.length; this.i++){
+                  if(this.detailOrder[this.i].id_pengadaan == item.id_pengadaan){
+                    this.deleteOnebyOne(this.detailOrder[this.i].id_detail_produk);
+                  }
+                }
+            })               
+        }, 
         getProduct(){
             var uri = this.$apiUrl + '/produk'             
             this.$http.get(uri).then(response =>{                 
@@ -299,9 +304,10 @@ export default {
         },
         deleteOnebyOne(deleteId){
             this.addOrder.append('id_detail_produk', deleteId);
-            var uri = this.$apiUrl + '/detail_pengadaan_produk/delete'; //data dihapus berdasarkan id_ukuran
-            console.log('id delete'+ deleteId);
-            this.$http.post(uri, this.addOrder).then(response =>{ 
+            console.log(deleteId)
+            var uri = this.$apiUrl + '/detail_pengadaan_produk/' + deleteId; //data dihapus berdasarkan id_ukuran
+            
+            this.$http.delete(uri, this.addOrder).then(response =>{ 
                 console.log('bisa delete');
             }).catch(error =>{                 
 
@@ -309,6 +315,7 @@ export default {
         },
         setDelete(item){     
             this.getOrderDetail(item);
+            this.deleteData(item.id_pengadaan);
         },         
         resetForm(){             
             this.form = {               

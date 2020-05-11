@@ -208,13 +208,21 @@ export default {
             errors : '',         
             updatedId : '', 
             imageUrl : null,          
+            alert: 0,
         }     
     },     
     methods:{         
         getData(){             
             var uri = this.$apiUrl + '/produk'             
             this.$http.get(uri).then(response =>{                 
-                this.products=response.data.data             
+                this.products=response.data.data;           
+                for(this.i = 0; this.i < this.products.length; this.i++){
+                  if( parseInt(this.products[this.i].stok) <= parseInt(this.products[this.i].min_stok) ){
+                    this.snackbar = true;               
+                    this.text = 'Hai! Coba cek, ada stok produk yang berada dibawah batas stok minimum';               
+                    this.color = 'White';
+                  }
+                }             
             })               
         },  
         getDataLog(){             
@@ -245,7 +253,7 @@ export default {
             }).catch(error =>{               
                 this.errors = error               
                 this.snackbar = true;               
-                this.text = 'Try Again';               
+                this.text = 'Gagal memasukkan data produk';               
                 this.color = 'red';               
                 this.load = false;           
             })         
