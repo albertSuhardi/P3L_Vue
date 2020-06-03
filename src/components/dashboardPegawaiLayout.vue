@@ -133,4 +133,8 @@
     color: #D68945;
 }
 
+.theme--light.v-app-bar.v-toolbar.v-sheet {
+    background-color: #D68945;
+}
+
 </style>

@@ -105,6 +105,17 @@
     </v-container>
 </template>
 <script> 
+
+import Vue from 'vue' 
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+Vue.use(VueSweetalert2);
+//=====
+import html2canvas from "html2canvas" // canvas
+import jsPDF from 'jspdf' // bikin pdf
+import 'jspdf-autotable'
+import dropdown from 'vue-dropdowns';
+
 import { log } from 'util'
 export default {    
     data () {       
@@ -182,7 +193,9 @@ export default {
             stocks: [],
             stocksLog: [],         
             detailOrder: [],
+            detailOrders: [],
             AllProduct: [],
+            supplier: [],
             snackbar: false,          
             color: null,         
             text: '',          
@@ -339,8 +352,24 @@ export default {
                 this.color = 'red';               
                 this.load = false;               
             }else{
-                this.getDetail(item);
-                this.print(item);
+                this.getStruckPengadaan(item);
+                this.getSupplier(item);
+
+                console.log(this.detailOrders.length);
+                console.log(this.form.no_telp);
+                console.log(this.form.alamat);
+                if(this.detailOrders.length <= 0 || this.form.no_telp == null){
+                    
+                }else{
+                    this.getDetail(item);
+                    // this.getSupplier(item);
+                    this.createPDF(item);
+                    this.print(item);
+                }
+                
+                //console.log(this.form.no_telp);
+                //console.log(this.form.alamat);
+                
             }
         },
         print(item){
@@ -386,12 +415,124 @@ export default {
             this.$http.put(uri, this.$qs.stringify(requestBody)).then(response =>{ 
                 console.log('hai');
             }).catch(error =>{})     
+        },
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////// MAKE LAPORAN ////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        getSupplier(item){
+            var uri = this.$apiUrl + '/supplier/dataSupplier?nama='+item.nama
+            this.$http.get(uri).then(response =>{                 
+                this.supplier = response.data.data;
+                for(this.i=0; this.i<this.supplier.length; this.i++){
+                    this.form.alamat = this.supplier[this.i].alamat;
+                    this.form.no_telp = this.supplier[this.i].no_telp;
+                }
+            })           
+        },
+        getStruckPengadaan(item){
+            this.struckPengadaan = [];
+            var uri = this.$apiUrl + '/detail_pengadaan_produk/struck?id_pengadaan='+item.id_pengadaan
+            this.$http.get(uri).then(response =>{                 
+                this.detailOrders = response.data.data;
+            })           
+        },
+        methodToRunOnSelect(payload) {
+            this.object = payload;
+        },
+        createPDF (item) {
+          let _this = this
+            console.log('=== local image ===')
+            console.log(this.local_image)
+            const header = this.local_image
+            // doc
+            const doc = new jsPDF('a4','px');
+            doc.addImage(header,'JPEG',25,20,400,110);
+            // isi auto table
+            //header
+            var headRows = function() {
+                return [{
+                no: "No",
+                nama: "Nama Produk",
+                unit: "Satuan",
+                jumlah: "Jumlah",
+                }];
+            };
+            //body
+            var bodyRows = function() {
+                let body = [];
+                for(var i = 0, len = _this.detailOrders.length; i < len; i++){
+                body.push({
+                    no: i+1,
+                    nama: _this.detailOrders[i].nama,
+                    unit: _this.detailOrders[i].unit,
+                    jumlah: _this.detailOrders[i].jumlah
+                });
+                }
+                return body;
+            }
+            //text judul
+            doc.setFontSize(20);
+            doc.setTextColor(40);
+            doc.setFontStyle('bold');
+            doc.text("Surat Pemesanan", 165, 150);
+            //text tahun
+            doc.setFontSize(12);
+            doc.setTextColor(40);
+            doc.setFontStyle('bold');
+            doc.text('No : '+item.id_pengadaan, 320, 180);
+            var dates = (new Date().toLocaleString('id',{month:'long', year:'numeric', day:'numeric'}))
+            doc.text('Tanggal : '+dates, 320, 194);
+            //text YTH
+            doc.setFontSize(12);
+            doc.setTextColor(40);
+            doc.setFontStyle('normal');
+            doc.text('Kepada Yth :', 30, 200);
+            doc.text(item.nama, 30, 214);
+            doc.text(this.form.alamat, 30, 228);
+            doc.text(this.form.no_telp, 30, 242);
+            doc.text('\n\nMohon untuk disediakan produk berikut ini : ', 29, 250);
+            doc.autoTable({
+            margin: { top: 280 },
+            head: headRows(),
+            body: bodyRows()
+            })
+            //text cetak pada
+            doc.setFontSize(12);
+            doc.setTextColor(12);
+            doc.setFontStyle('normal');
+            var date = (new Date().toLocaleString('id',{month:'long', year:'numeric', day:'numeric'}))
+            doc.text("Dicetak tanggal, "+date, 290, 620);
+            doc.save('strukPengadaan.pdf');
+            this.succesPrinted();
+        },
+        succesPrinted(){
+            this.$swal('Sukses Print Laporan','','success');
+        },
+        convertBase64LocalImage(){
+        //add local image
+            let _this = this
+            var res
+            var xhr = new XMLHttpRequest();       
+            xhr.open("GET", require('../../assets/header.png'), true); 
+            xhr.responseType = "blob";
+            xhr.onload = function (e) {
+                    console.log(this.response);
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                    res = event.target.result;
+                    _this.local_image = res 
+                    }
+                    var file = this.response;
+                    reader.readAsDataURL(file)
+            }
+            xhr.send()
         }     
     },     
     mounted(){ 
         this.getData(); 
         this.getDataLog();
         this.getProduct();
+        this.convertBase64LocalImage();
     } 
 } 
 </script> 

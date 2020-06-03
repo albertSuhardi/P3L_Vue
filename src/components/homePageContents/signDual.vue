@@ -213,4 +213,8 @@ export default {
     color: white;
   }
 
+  .theme--light.v-toolbar.v-sheet {
+    background-color: #D68945;
+  }
+
 </style>

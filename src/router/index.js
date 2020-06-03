@@ -52,7 +52,12 @@ const routes = [
             path: '/signDual',
             name: 'signDual',
             component: loadHomePage('signDual')
-        }
+        },
+        {
+          path: '/layanan',
+          name: 'layanan',
+          component: loadHomePage('layanan')
+      }
     ]
 },
 {
@@ -130,6 +135,55 @@ const routes = [
           name: 'ListHewanController', 
           meta: { requiresAdmin: true},
           component: loadAdminPage('ListHewanController')
+        },
+        { 
+          path: '/dashboardAdmin/Laporan',            
+          name: 'LaporanController', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('LaporanController')
+        },
+        //Semua Page Laporan====================================
+        { 
+          path: '/dashboardAdmin/JasaLayananTerlaris',            
+          name: 'Laporan_JasaLayananTerlaris', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('Laporan_JasaLayananTerlaris')
+        },
+        { 
+          path: '/dashboardAdmin/ProdukTerlaris',            
+          name: 'Laporan_ProdukTerlaris', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('Laporan_ProdukTerlaris')
+        },
+        { 
+          path: '/dashboardAdmin/Laporan_PendapatanTahunan',            
+          name: 'Laporan_PendapatanTahunan', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('Laporan_PendapatanTahunan')
+        },
+        { 
+          path: '/dashboardAdmin/LaporanPendapatanBulanan',            
+          name: 'Laporan_PendapatanBulanan', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('Laporan_PendapatanBulanan')
+        },
+        { //Laporan_PengadaanProdukBulanan
+          path: '/dashboardAdmin/Laporan_PengadaanProdukTahunan',            
+          name: 'Laporan_PengadaanProdukTahunan', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('Laporan_PengadaanProdukTahunan')
+        },
+        { 
+          path: '/dashboardAdmin/Laporan_PengadaanProdukBulanan',            
+          name: 'Laporan_PengadaanProdukBulanan', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('Laporan_PengadaanProdukBulanan')
+        },
+        { 
+          path: '/dashboardAdmin/coba',            
+          name: 'coba', 
+          meta: { requiresAdmin: true},
+          component: loadAdminPage('coba')
         }
     ] 
 }, 

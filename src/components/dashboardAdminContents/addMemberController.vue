@@ -18,7 +18,7 @@
                     </v-flex>
                 </v-layout>
 
-                <v-data-table :headers="headers" :items="members" :search="keyword" :loading="load">
+                <v-data-table :headers="headers" :items="members" :search="keyword" :loading="load" v-if="!showable">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_member">
@@ -41,7 +41,7 @@
                     </template>
                 </v-data-table>
                 <div v-if="showable">
-                    <v-data-table :headers="headers_LOG" :items="membersLog" :search="keyword" :loading="load">
+                    <v-data-table :headers="headers_Log" :items="membersLog" :search="keyword" :loading="load">
                     <template v-slot:body="{ items }">
                         <tbody>
                             <tr v-for="(item,index) in items" :key="item.id_member">
@@ -126,6 +126,7 @@ import { log } from 'util'
 export default {    
     data () {       
         return {       
+            showable: false,
             dialog: false,         
             keyword: '',         
             headers: [             

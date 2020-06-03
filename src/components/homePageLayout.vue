@@ -12,7 +12,11 @@
       </v-toolbar-items>
       
       <v-toolbar-items>
-        <v-btn text router to="/showProduk">Product</v-btn>
+        <v-btn text router to="/showProduk">Produk</v-btn>
+      </v-toolbar-items>
+
+      <v-toolbar-items>
+        <v-btn text router to="/layanan">Layanan</v-btn>
       </v-toolbar-items>
 
       <v-toolbar-items>

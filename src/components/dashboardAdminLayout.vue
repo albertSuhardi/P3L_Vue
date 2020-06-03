@@ -63,6 +63,7 @@
             //{ title: 'Data Supplier', icon: 'mdi-account-star', name: 'addSupplierListController'},
             { title: 'Pet', icon: 'mdi-dog', name: 'ListHewanController'},
             { title: 'Stock Product', icon: 'mdi-gift-outline', name: 'StockProductController'},
+            { title: 'Laporan', icon: 'mdi-clipboard-list', name: 'LaporanController'},
         ],
         }
     },
@@ -135,6 +136,10 @@
 
 .mdi{
     color: #D68945;
+}
+
+.theme--light.v-app-bar.v-toolbar.v-sheet {
+    background-color: #D68945;
 }
 
 </style>
